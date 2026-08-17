@@ -33,15 +33,8 @@
     <!-- Right: editorial book image -->
     <div class="hero__visual" aria-hidden="true">
       <div class="hero__image-frame">
-        <img
-          src="assets/images/hero-books.jpg"
-          alt="Books on a reading table"
-          class="hero__image"
-          loading="eager"
-          fetchpriority="high"
-          width="640"
-          height="480"
-        >
+        <img src="assets/images/Front-img.jpeg" alt="Books on a reading table" class="hero__image" loading="eager"
+          fetchpriority="high" width="640" height="480">
       </div>
     </div>
 
@@ -82,14 +75,14 @@
 
     <div class="books-grid" role="list" aria-label="Featured books">
       @for (book of featuredBooks(); track book.id) {
-        <div role="listitem">
-          <app-book-card [book]="book"></app-book-card>
-        </div>
+      <div role="listitem">
+        <app-book-card [book]="book"></app-book-card>
+      </div>
       }
       @if (featuredBooks().length === 0) {
-        <div class="books-empty">
-          <p>Loading books from the collection…</p>
-        </div>
+      <div class="books-empty">
+        <p>Loading books from the collection…</p>
+      </div>
       }
     </div>
 
@@ -109,14 +102,8 @@
     <!-- Image side -->
     <div class="about-snippet__image-side">
       <div class="about-snippet__image-frame">
-        <img
-          src="assets/images/about-library.jpg"
-          alt="Library reading area"
-          class="about-snippet__image"
-          loading="lazy"
-          width="560"
-          height="420"
-        >
+        <img src="assets/images/second-img.png" alt="Library reading area" class="about-snippet__image" loading="lazy"
+          width="560" height="420">
       </div>
     </div>
 
@@ -250,7 +237,11 @@
     <div class="visit__grid">
       <div class="visit-info-card">
         <div class="visit-info-card__icon" aria-hidden="true">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+            <circle cx="12" cy="10" r="3" />
+          </svg>
         </div>
         <div>
           <h3 class="visit-info-card__label">Address</h3>
@@ -260,7 +251,11 @@
 
       <div class="visit-info-card">
         <div class="visit-info-card__icon" aria-hidden="true">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.24h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.06 6.06l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path
+              d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.24h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.06 6.06l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+          </svg>
         </div>
         <div>
           <h3 class="visit-info-card__label">Phone</h3>
@@ -270,7 +265,11 @@
 
       <div class="visit-info-card">
         <div class="visit-info-card__icon" aria-hidden="true">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="20" height="16" x="2" y="4" rx="2" />
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+          </svg>
         </div>
         <div>
           <h3 class="visit-info-card__label">Email</h3>
@@ -280,7 +279,11 @@
 
       <div class="visit-info-card">
         <div class="visit-info-card__icon" aria-hidden="true">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
         </div>
         <div>
           <h3 class="visit-info-card__label">Opening Hours</h3>

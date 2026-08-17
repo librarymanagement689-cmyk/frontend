@@ -17,20 +17,13 @@
   <div class="container about-intro__inner">
 
     <div class="about-intro__image-col">
-      <img
-        src="assets/images/about-library.jpg"
-        alt="The welcoming interior of Sri Krishna Lending Library"
-        class="about-intro__image"
-        loading="lazy"
-      >
+      <img src="assets/images/Front-img.jpeg" alt="The welcoming interior of Sri Krishna Lending Library"
+        class="about-intro__image" loading="lazy">
     </div>
 
     <div class="about-intro__content">
-      <app-section-heading
-        id="about-intro-heading"
-        eyebrow="Who We Are"
-        title="A Home for Every Reader"
-      ></app-section-heading>
+      <app-section-heading id="about-intro-heading" eyebrow="Who We Are"
+        title="A Home for Every Reader"></app-section-heading>
 
       <p>
         Sri Krishna Lending Library was established with a clear and heartfelt mission —
@@ -56,20 +49,17 @@
 <!-- Mission section -->
 <section class="section section--cream about-mission" aria-labelledby="mission-heading">
   <div class="container">
-    <app-section-heading
-      id="mission-heading"
-      eyebrow="Our Mission"
-      title="Why We Exist"
+    <app-section-heading id="mission-heading" eyebrow="Our Mission" title="Why We Exist"
       subtitle="Three core values guide everything we do at Sri Krishna Lending Library."
-      [centered]="true"
-    ></app-section-heading>
+      [centered]="true"></app-section-heading>
 
     <div class="about-mission__grid">
 
       <div class="about-mission__card">
         <div class="about-mission__icon" aria-hidden="true">
-          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
           </svg>
         </div>
         <h3 class="about-mission__card-title">Access to Knowledge</h3>
@@ -81,11 +71,12 @@
 
       <div class="about-mission__card">
         <div class="about-mission__icon" aria-hidden="true">
-          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-            <circle cx="9" cy="7" r="4"/>
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
           </svg>
         </div>
         <h3 class="about-mission__card-title">Building Community</h3>
@@ -97,10 +88,11 @@
 
       <div class="about-mission__card">
         <div class="about-mission__icon" aria-hidden="true">
-          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-            <path d="M2 17l10 5 10-5"/>
-            <path d="M2 12l10 5 10-5"/>
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5z" />
+            <path d="M2 17l10 5 10-5" />
+            <path d="M2 12l10 5 10-5" />
           </svg>
         </div>
         <h3 class="about-mission__card-title">Lifelong Learning</h3>
@@ -120,10 +112,10 @@
     <h2 id="stats-heading" class="sr-only">Library at a glance</h2>
     <div class="about-stats-grid">
       @for (h of highlights; track h.label) {
-        <div class="about-stats-item">
-          <span class="about-stats-item__value">{{ h.value }}</span>
-          <span class="about-stats-item__label">{{ h.label }}</span>
-        </div>
+      <div class="about-stats-item">
+        <span class="about-stats-item__value">{{ h.value }}</span>
+        <span class="about-stats-item__label">{{ h.label }}</span>
+      </div>
       }
     </div>
   </div>
@@ -133,11 +125,8 @@
 <section class="section section--white about-env" aria-labelledby="env-heading">
   <div class="container about-env__inner">
     <div class="about-env__content">
-      <app-section-heading
-        id="env-heading"
-        eyebrow="Our Space"
-        title="A Welcoming Reading Environment"
-      ></app-section-heading>
+      <app-section-heading id="env-heading" eyebrow="Our Space"
+        title="A Welcoming Reading Environment"></app-section-heading>
       <p>
         We have designed our library to be a calm, comfortable, and welcoming space.
         Whether you prefer to browse our shelves at your own pace or seek recommendations
@@ -154,12 +143,8 @@
     </div>
 
     <div class="about-env__image-col">
-      <img
-        src="assets/images/hero-library.jpg"
-        alt="Organised bookshelves in our library"
-        class="about-env__image"
-        loading="lazy"
-      >
+      <img src="assets/images/second-img.png" alt="Organised bookshelves in our library" class="about-env__image"
+        loading="lazy">
     </div>
   </div>
 </section>
