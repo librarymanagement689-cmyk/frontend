@@ -1,0 +1,408 @@
+[
+    {
+        "id":  "1",
+        "title":  "The Alchemist",
+        "author":  "Paulo Coelho",
+        "category":  "Fiction",
+        "language":  "English",
+        "available":  true,
+        "featured":  true,
+        "imageUrl":  "https://picsum.photos/seed/book1/300/450",
+        "description":  "A young Andalusian shepherd named Santiago embarks on a journey to find a worldly treasure, discovering along the way that the treasure he seeks is not what he expected."
+    },
+    {
+        "id":  "2",
+        "title":  "Atomic Habits",
+        "author":  "James Clear",
+        "category":  "Self Help",
+        "language":  "English",
+        "available":  true,
+        "featured":  true,
+        "imageUrl":  "https://picsum.photos/seed/book2/300/450",
+        "description":  "An easy and proven way to build good habits and break bad ones. Tiny changes, remarkable results."
+    },
+    {
+        "id":  "3",
+        "title":  "Sapiens",
+        "author":  "Yuval Noah Harari",
+        "category":  "History",
+        "language":  "English",
+        "available":  false,
+        "featured":  true,
+        "imageUrl":  "https://picsum.photos/seed/book3/300/450",
+        "description":  "A brief history of humankind, from the cognitive revolution to the present day."
+    },
+    {
+        "id":  "4",
+        "title":  "The Power of Now",
+        "author":  "Eckhart Tolle",
+        "category":  "Spirituality",
+        "language":  "English",
+        "available":  true,
+        "featured":  true,
+        "imageUrl":  "https://picsum.photos/seed/book4/300/450",
+        "description":  "A guide to spiritual enlightenment that teaches the importance of living in the present moment."
+    },
+    {
+        "id":  "5",
+        "title":  "A Brief History of Time",
+        "author":  "Stephen Hawking",
+        "category":  "Science",
+        "language":  "English",
+        "available":  true,
+        "featured":  true,
+        "imageUrl":  "https://picsum.photos/seed/book5/300/450",
+        "description":  "A landmark volume in science writing, explaining the origin and evolution of the universe."
+    },
+    {
+        "id":  "6",
+        "title":  "The Little Prince",
+        "author":  "Antoine de Saint-Exupéry",
+        "category":  "Children",
+        "language":  "English",
+        "available":  true,
+        "featured":  true,
+        "imageUrl":  "https://picsum.photos/seed/book6/300/450",
+        "description":  "A poetic tale of a little prince who travels from planet to planet, learning about life and love."
+    },
+    {
+        "id":  "7",
+        "title":  "To Kill a Mockingbird",
+        "author":  "Harper Lee",
+        "category":  "Fiction",
+        "language":  "English",
+        "available":  false,
+        "imageUrl":  "https://picsum.photos/seed/book7/300/450",
+        "description":  "A novel of profound warmth and humour, a searching examination of the human condition."
+    },
+    {
+        "id":  "8",
+        "title":  "1984",
+        "author":  "George Orwell",
+        "category":  "Fiction",
+        "language":  "English",
+        "available":  true,
+        "imageUrl":  "https://picsum.photos/seed/book8/300/450",
+        "description":  "A dystopian novel set in a totalitarian society where the government exercises extreme control over every aspect of life."
+    },
+    {
+        "id":  "9",
+        "title":  "Think and Grow Rich",
+        "author":  "Napoleon Hill",
+        "category":  "Self Help",
+        "language":  "English",
+        "available":  true,
+        "imageUrl":  "https://picsum.photos/seed/book9/300/450",
+        "description":  "One of the best-selling books of all time on personal development and success principles."
+    },
+    {
+        "id":  "10",
+        "title":  "Bhagavad Gita As It Is",
+        "author":  "A.C. Bhaktivedanta Swami Prabhupada",
+        "category":  "Spirituality",
+        "language":  "English",
+        "available":  true,
+        "imageUrl":  "https://picsum.photos/seed/book10/300/450",
+        "description":  "The world\u0027s most famous philosophical and spiritual dialogue, the Bhagavad Gita."
+    },
+    {
+        "id":  "11",
+        "title":  "The Da Vinci Code",
+        "author":  "Dan Brown",
+        "category":  "Fiction",
+        "language":  "English",
+        "available":  true,
+        "imageUrl":  "https://picsum.photos/seed/book11/300/450",
+        "description":  "A mystery thriller about a series of murders at the Louvre and a religious conspiracy."
+    },
+    {
+        "id":  "12",
+        "title":  "Harry Potter and the Philosopher\u0027s Stone",
+        "author":  "J.K. Rowling",
+        "category":  "Children",
+        "language":  "English",
+        "available":  false,
+        "imageUrl":  "https://picsum.photos/seed/book12/300/450",
+        "description":  "The first book in the beloved Harry Potter series about a young wizard\u0027s journey."
+    },
+    {
+        "id":  "13",
+        "title":  "Rich Dad Poor Dad",
+        "author":  "Robert T. Kiyosaki",
+        "category":  "Self Help",
+        "language":  "English",
+        "available":  true,
+        "imageUrl":  "https://picsum.photos/seed/book13/300/450",
+        "description":  "A personal finance book that challenges conventional wisdom about money and investing."
+    },
+    {
+        "id":  "14",
+        "title":  "Wings of Fire",
+        "author":  "A.P.J. Abdul Kalam",
+        "category":  "Non-Fiction",
+        "language":  "English",
+        "available":  true,
+        "imageUrl":  "https://picsum.photos/seed/book14/300/450",
+        "description":  "An autobiography of the former President of India and renowned scientist."
+    },
+    {
+        "id":  "15",
+        "title":  "The Secret",
+        "author":  "Rhonda Byrne",
+        "category":  "Self Help",
+        "language":  "English",
+        "available":  false,
+        "imageUrl":  "https://picsum.photos/seed/book15/300/450",
+        "description":  "Based on the law of attraction, this book claims to offer the secret to happiness and success."
+    },
+    {
+        "id":  "16",
+        "title":  "Pride and Prejudice",
+        "author":  "Jane Austen",
+        "category":  "Fiction",
+        "language":  "English",
+        "available":  true,
+        "imageUrl":  "https://picsum.photos/seed/book16/300/450",
+        "description":  "A romantic novel about manners, upbringing, morality, education, and marriage in Georgian England."
+    },
+    {
+        "id":  "17",
+        "title":  "Cosmos",
+        "author":  "Carl Sagan",
+        "category":  "Science",
+        "language":  "English",
+        "available":  true,
+        "imageUrl":  "https://picsum.photos/seed/book17/300/450",
+        "description":  "A personal voyage through the universe, exploring the history and nature of science."
+    },
+    {
+        "id":  "18",
+        "title":  "Malgudi Days",
+        "author":  "R.K. Narayan",
+        "category":  "Fiction",
+        "language":  "English",
+        "available":  true,
+        "imageUrl":  "https://picsum.photos/seed/book18/300/450",
+        "description":  "A collection of short stories set in the fictional South Indian town of Malgudi."
+    },
+    {
+        "id":  "19",
+        "title":  "The Immortals of Meluha",
+        "author":  "Amish Tripathi",
+        "category":  "Fiction",
+        "language":  "English",
+        "available":  false,
+        "imageUrl":  "https://picsum.photos/seed/book19/300/450",
+        "description":  "A mythological fiction retelling of the story of Shiva as a tribal warrior."
+    },
+    {
+        "id":  "20",
+        "title":  "Autobiography of a Yogi",
+        "author":  "Paramahansa Yogananda",
+        "category":  "Spirituality",
+        "language":  "English",
+        "available":  true,
+        "imageUrl":  "https://picsum.photos/seed/book20/300/450",
+        "description":  "The life story of Paramahansa Yogananda and his spiritual journey through India and America."
+    },
+    {
+        "id":  "21",
+        "title":  "The Jungle Book",
+        "author":  "Rudyard Kipling",
+        "category":  "Children",
+        "language":  "English",
+        "available":  true,
+        "imageUrl":  "https://picsum.photos/seed/book21/300/450",
+        "description":  "The adventures of Mowgli, an Indian boy raised in the jungle by wolves."
+    },
+    {
+        "id":  "22",
+        "title":  "Discovery of India",
+        "author":  "Jawaharlal Nehru",
+        "category":  "History",
+        "language":  "English",
+        "available":  true,
+        "imageUrl":  "https://picsum.photos/seed/book22/300/450",
+        "description":  "A historical account of India\u0027s civilization, culture, and struggle for independence."
+    },
+    {
+        "id":  "23",
+        "title":  "The Selfish Gene",
+        "author":  "Richard Dawkins",
+        "category":  "Science",
+        "language":  "English",
+        "available":  false,
+        "imageUrl":  "https://picsum.photos/seed/book23/300/450",
+        "description":  "A book on evolutionary biology that popularized the gene-centered view of evolution."
+    },
+    {
+        "id":  "24",
+        "title":  "My Experiments with Truth",
+        "author":  "Mahatma Gandhi",
+        "category":  "Non-Fiction",
+        "language":  "English",
+        "available":  true,
+        "imageUrl":  "https://picsum.photos/seed/book24/300/450",
+        "description":  "The autobiography of Mahatma Gandhi, covering his life from childhood to 1921."
+    },
+    {
+        "id":  "25",
+        "title":  "The Kite Runner",
+        "author":  "Khaled Hosseini",
+        "category":  "Fiction",
+        "language":  "English",
+        "available":  true,
+        "imageUrl":  "https://picsum.photos/seed/book25/300/450",
+        "description":  "A story of friendship, guilt, and redemption set against the backdrop of Afghanistan."
+    },
+    {
+        "id":  "26",
+        "title":  "Man\u0027s Search for Meaning",
+        "author":  "Viktor Frankl",
+        "category":  "Self Help",
+        "language":  "English",
+        "available":  true,
+        "imageUrl":  "https://picsum.photos/seed/book26/300/450",
+        "description":  "A psychiatrist\u0027s memoir of life in Nazi concentration camps and its lessons for spiritual survival."
+    },
+    {
+        "id":  "27",
+        "title":  "Ramayana",
+        "author":  "Valmiki (Translated)",
+        "category":  "Spirituality",
+        "language":  "English",
+        "available":  true,
+        "imageUrl":  "https://picsum.photos/seed/book27/300/450",
+        "description":  "The ancient Indian epic that narrates the journey of Prince Rama and his quest to rescue his wife Sita."
+    },
+    {
+        "id":  "28",
+        "title":  "Charlie and the Chocolate Factory",
+        "author":  "Roald Dahl",
+        "category":  "Children",
+        "language":  "English",
+        "available":  false,
+        "imageUrl":  "https://picsum.photos/seed/book28/300/450",
+        "description":  "The beloved story of Charlie Bucket and his golden ticket to Willy Wonka\u0027s mysterious chocolate factory."
+    },
+    {
+        "id":  "29",
+        "title":  "The Grand Design",
+        "author":  "Stephen Hawking \u0026 Leonard Mlodinow",
+        "category":  "Science",
+        "language":  "English",
+        "available":  true,
+        "imageUrl":  "https://picsum.photos/seed/book29/300/450",
+        "description":  "An exploration of the fundamental questions of the universe from one of the world\u0027s greatest scientists."
+    },
+    {
+        "id":  "30",
+        "title":  "India After Gandhi",
+        "author":  "Ramachandra Guha",
+        "category":  "History",
+        "language":  "English",
+        "available":  true,
+        "imageUrl":  "https://picsum.photos/seed/book30/300/450",
+        "description":  "A comprehensive history of the world\u0027s largest democracy from independence to the present day."
+    },
+    {
+        "id":  "31",
+        "title":  "The 7 Habits of Highly Effective People",
+        "author":  "Stephen R. Covey",
+        "category":  "Self Help",
+        "language":  "English",
+        "available":  true,
+        "imageUrl":  "https://picsum.photos/seed/book31/300/450",
+        "description":  "A powerful framework for personal and professional effectiveness."
+    },
+    {
+        "id":  "32",
+        "title":  "Crime and Punishment",
+        "author":  "Fyodor Dostoevsky",
+        "category":  "Fiction",
+        "language":  "English",
+        "available":  true,
+        "imageUrl":  "https://picsum.photos/seed/book32/300/450",
+        "description":  "A psychological novel about the mental anguish and moral dilemmas of a young murderer."
+    },
+    {
+        "id":  "33",
+        "title":  "Panchatantra",
+        "author":  "Vishnu Sharma",
+        "category":  "Children",
+        "language":  "English",
+        "available":  true,
+        "imageUrl":  "https://picsum.photos/seed/book33/300/450",
+        "description":  "An ancient Indian collection of fables offering practical wisdom through animal stories."
+    },
+    {
+        "id":  "34",
+        "title":  "The Origin of Species",
+        "author":  "Charles Darwin",
+        "category":  "Science",
+        "language":  "English",
+        "available":  false,
+        "imageUrl":  "https://picsum.photos/seed/book34/300/450",
+        "description":  "The groundbreaking work introducing the theory of evolution by natural selection."
+    },
+    {
+        "id":  "35",
+        "title":  "Mahabharata",
+        "author":  "Vyasa (Translated)",
+        "category":  "Spirituality",
+        "language":  "English",
+        "available":  true,
+        "imageUrl":  "https://picsum.photos/seed/book35/300/450",
+        "description":  "The great Indian epic narrating the Kurukshetra War and the fates of the Kaurava and Pandava princes."
+    },
+    {
+        "id":  "36",
+        "title":  "The Lean Startup",
+        "author":  "Eric Ries",
+        "category":  "Non-Fiction",
+        "language":  "English",
+        "available":  true,
+        "imageUrl":  "https://picsum.photos/seed/book36/300/450",
+        "description":  "How today\u0027s entrepreneurs use continuous innovation to create radically successful businesses."
+    },
+    {
+        "id":  "37",
+        "title":  "Anne of Green Gables",
+        "author":  "L.M. Montgomery",
+        "category":  "Children",
+        "language":  "English",
+        "available":  true,
+        "imageUrl":  "https://picsum.photos/seed/book37/300/450",
+        "description":  "The story of Anne Shirley, a spirited young orphan girl who comes to live at Green Gables farm."
+    },
+    {
+        "id":  "38",
+        "title":  "The Monk Who Sold His Ferrari",
+        "author":  "Robin Sharma",
+        "category":  "Self Help",
+        "language":  "English",
+        "available":  false,
+        "imageUrl":  "https://picsum.photos/seed/book38/300/450",
+        "description":  "A fable about fulfilling your dreams and reaching your destiny."
+    },
+    {
+        "id":  "39",
+        "title":  "Midnight\u0027s Children",
+        "author":  "Salman Rushdie",
+        "category":  "Fiction",
+        "language":  "English",
+        "available":  true,
+        "imageUrl":  "https://picsum.photos/seed/book39/300/450",
+        "description":  "A Booker Prize-winning novel about children who were born at the stroke of India\u0027s independence."
+    },
+    {
+        "id":  "40",
+        "title":  "The Story of Civilization",
+        "author":  "Will Durant",
+        "category":  "History",
+        "language":  "English",
+        "available":  true,
+        "imageUrl":  "https://picsum.photos/seed/book40/300/450",
+        "description":  "A monumental work documenting the history of human civilization across multiple volumes."
+    }
+]

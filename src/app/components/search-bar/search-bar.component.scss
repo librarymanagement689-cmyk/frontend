@@ -1,0 +1,139 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.search-bar {
+  background: $color-white;
+  border-radius: $radius-xl;
+  box-shadow: $shadow-xl;
+  border: 1px solid $color-gray-border;
+  overflow: hidden;
+
+  &__inner {
+    display: flex;
+    flex-direction: column;
+
+    @include lg {
+      flex-direction: row;
+      align-items: stretch;
+    }
+  }
+
+  &__input-wrap {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    padding: 0 $space-5;
+    min-height: 60px;
+    position: relative;
+    gap: $space-3;
+
+    @include lg {
+      min-height: 72px;
+    }
+  }
+
+  &__icon {
+    color: $color-gray-mid;
+    flex-shrink: 0;
+  }
+
+  &__input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-family: $font-sans;
+    font-size: $fs-base;
+    color: $color-text-body;
+    background: transparent;
+    padding: $space-2 0;
+    min-width: 0;
+
+    &::placeholder {
+      color: $color-gray-mid;
+    }
+
+    &::-webkit-search-cancel-button {
+      -webkit-appearance: none;
+      appearance: none;
+    }
+  }
+
+  &__divider {
+    height: 1px;
+    background: $color-gray-border;
+    margin: 0 $space-5;
+
+    @include lg {
+      width: 1px;
+      height: auto;
+      margin: $space-4 0;
+      flex-shrink: 0;
+    }
+  }
+
+  &__select-wrap {
+    display: flex;
+    align-items: center;
+    padding: 0 $space-5;
+    min-height: 56px;
+    position: relative;
+
+    @include lg {
+      min-height: 72px;
+      min-width: 180px;
+    }
+  }
+
+  &__select {
+    appearance: none;
+    -webkit-appearance: none;
+    border: none;
+    outline: none;
+    font-family: $font-sans;
+    font-size: $fs-sm;
+    font-weight: $fw-medium;
+    color: $color-text-body;
+    background: transparent;
+    cursor: pointer;
+    padding-right: $space-6;
+    width: 100%;
+
+    option {
+      font-weight: $fw-regular;
+    }
+  }
+
+  &__select-arrow {
+    position: absolute;
+    right: $space-5;
+    color: $color-gray-mid;
+    pointer-events: none;
+    flex-shrink: 0;
+  }
+
+  &__btn {
+    margin: $space-4 $space-5;
+    border-radius: $radius-md !important;
+    padding: $space-4 $space-8 !important;
+    font-size: $fs-base !important;
+    justify-content: center;
+
+    @include lg {
+      margin: $space-4;
+      align-self: center;
+      border-radius: $radius-lg !important;
+    }
+  }
+}

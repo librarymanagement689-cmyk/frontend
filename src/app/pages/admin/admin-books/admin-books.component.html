@@ -1,0 +1,579 @@
+<div class="admin-books-page">
+  <div class="page-header">
+    <div>
+      <h2>Books Catalog Management (LIB-XXXXX)</h2>
+      <p>Manage 4,000+ catalog books, cover images, website visibility, and CSV bulk import</p>
+    </div>
+    <div class="header-actions">
+      <button (click)="openCSVModal()" class="btn btn--outline-gold">
+        📥 Import Books CSV
+      </button>
+      <button (click)="openAddModal()" class="btn btn--primary">
+        ➕ Add New Book
+      </button>
+    </div>
+  </div>
+
+  <!-- Search and filters bar -->
+  <div class="filters-bar">
+    <div class="search-wrap">
+      <input type="text" [(ngModel)]="searchQuery" (keyup.enter)="onSearch()"
+        placeholder="Search title, author, or LIB-XXXXX ID..." class="form-control" />
+      <button (click)="onSearch()" class="btn btn--outline-gold btn--sm">Search</button>
+    </div>
+
+    <div class="filter-group">
+      <select [(ngModel)]="selectedCategory" (change)="onSearch()" class="form-control">
+        <option value="">All Categories</option>
+        @for (cat of categories; track cat) {
+        <option [value]="cat">{{ cat }}</option>
+        }
+      </select>
+
+      <select [(ngModel)]="selectedLanguage" (change)="onSearch()" class="form-control">
+        <option value="">All Languages</option>
+        @for (lang of languages; track lang) {
+        <option [value]="lang">{{ lang }}</option>
+        }
+      </select>
+
+      <select [(ngModel)]="selectedStatus" (change)="onSearch()" class="form-control">
+        <option value="">All Statuses</option>
+        <option value="available">Available</option>
+        <option value="borrowed">Borrowed</option>
+      </select>
+
+      <select [(ngModel)]="selectedPublish" (change)="onSearch()" class="form-control">
+        <option value="">Website Visibility</option>
+        <option value="true">Published</option>
+        <option value="false">Hidden</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Desktop Table & Mobile Cards -->
+  <div class="table-card">
+    @if (isLoading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <span>Loading catalog records...</span>
+    </div>
+    } @else if (books().length === 0) {
+    <div class="empty-state">
+      <p>No books found matching your filters.</p>
+    </div>
+    } @else {
+    <!-- Desktop Table -->
+    <div class="table-responsive desktop-only">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Book ID</th>
+            <th>Cover</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Language</th>
+            <th>Status</th>
+            <th>Website</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (book of books(); track book.book_id) {
+          <tr>
+            <td><span class="id-badge">{{ book.book_id }}</span></td>
+            <td>
+              <div class="cover-thumb">
+                @if (book.image_url) {
+                <img [src]="book.image_url" [alt]="book.title" />
+                } @else {
+                <div class="no-cover-thumb">📖</div>
+                }
+              </div>
+            </td>
+            <td class="font-semibold">
+              <button (click)="openDetailsModal(book.book_id)" class="book-title-link">
+                {{ book.title }}
+              </button>
+            </td>
+            <td>{{ book.author }}</td>
+            <td><strong>₹{{ book.price | number:'1.2-2' }}</strong></td>
+            <td><span class="tag-pill">{{ book.category }}</span></td>
+            <td>{{ book.language }}</td>
+            <td>
+              <span class="badge" [ngClass]="book.status === 'available' ? 'badge--available' : 'badge--unavailable'">
+                {{ book.status | uppercase }}
+              </span>
+            </td>
+            <td>
+              <button (click)="togglePublish(book)" class="toggle-btn"
+                [ngClass]="book.publish_on_website ? 'published' : 'hidden'">
+                {{ book.publish_on_website ? 'Published' : 'Hidden' }}
+              </button>
+            </td>
+            <td>
+              <div class="action-buttons">
+                <button (click)="openDetailsModal(book.book_id)" class="btn-action view"
+                  title="View Book Details & History">👁️</button>
+                <button (click)="openEditModal(book)" class="btn-action edit" title="Edit Book">✏️</button>
+                <button (click)="deleteBook(book)" class="btn-action delete" title="Delete Book">🗑️</button>
+              </div>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Mobile Cards Grid -->
+    <div class="mobile-cards-grid mobile-only">
+      @for (book of books(); track book.book_id) {
+      <div class="mobile-book-card">
+        <div class="mobile-card-top">
+          <div class="cover-thumb">
+            @if (book.image_url) {
+            <img [src]="book.image_url" [alt]="book.title" />
+            } @else {
+            <div class="no-cover-thumb">📖</div>
+            }
+          </div>
+          <div class="mobile-card-info">
+            <span class="id-badge">{{ book.book_id }}</span>
+            <h4 (click)="openDetailsModal(book.book_id)">{{ book.title }}</h4>
+            <p>by {{ book.author }}</p>
+            <div class="mobile-meta">
+              <span>₹{{ book.price }}</span> • <span>{{ book.category }}</span> • <span>{{ book.language }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mobile-card-bottom">
+          <div class="mobile-badges">
+            <span class="badge" [ngClass]="book.status === 'available' ? 'badge--available' : 'badge--unavailable'">
+              {{ book.status | uppercase }}
+            </span>
+            <button (click)="togglePublish(book)" class="toggle-btn"
+              [ngClass]="book.publish_on_website ? 'published' : 'hidden'">
+              {{ book.publish_on_website ? 'Published' : 'Hidden' }}
+            </button>
+          </div>
+
+          <div class="action-buttons">
+            <button (click)="openDetailsModal(book.book_id)" class="btn-action view">👁️ Details</button>
+            <button (click)="openEditModal(book)" class="btn-action edit">✏️ Edit</button>
+            <button (click)="deleteBook(book)" class="btn-action delete">🗑️ Delete</button>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+
+    <!-- Pagination -->
+    <div class="table-pagination">
+      <span>Showing page {{ currentPage }} of {{ totalPages() }} ({{ totalCount() }} total books)</span>
+      <div class="page-controls">
+        <button (click)="loadBooks(currentPage - 1)" [disabled]="currentPage <= 1" class="btn btn--outline btn--sm">
+          Previous
+        </button>
+        <button (click)="loadBooks(currentPage + 1)" [disabled]="currentPage >= totalPages()"
+          class="btn btn--outline btn--sm">
+          Next
+        </button>
+      </div>
+    </div>
+    }
+  </div>
+
+  <!-- Add/Edit Book Modal -->
+  @if (isModalOpen()) {
+  <div class="modal-backdrop" (click)="closeModal()">
+    <div class="modal-card modal-card--lg" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ isEditing() ? 'Edit Book (' + editingBookId() + ')' : 'Add New Book' }}</h3>
+        <button (click)="closeModal()" class="close-btn">&times;</button>
+      </div>
+
+      <form (ngSubmit)="saveBook()" class="modal-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Book ID (Auto-generated)</label>
+            <input type="text" [value]="editingBookId() || 'LIB-XXXXX (Generated on Save)'" readonly
+              class="form-control readonly" />
+          </div>
+
+          <div class="form-group">
+            <label>Title *</label>
+            <input type="text" [(ngModel)]="bookForm.title" name="title" required class="form-control"
+              placeholder="Book Title" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Author *</label>
+            <input type="text" [(ngModel)]="bookForm.author" name="author" required class="form-control"
+              placeholder="Author Name" />
+          </div>
+
+          <div class="form-group">
+            <label>Price (₹) *</label>
+            <input type="number" [(ngModel)]="bookForm.price" name="price" required min="0" step="0.01"
+              class="form-control" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Category *</label>
+            <select [(ngModel)]="bookForm.category" name="category" required class="form-control">
+              @for (cat of categories; track cat) {
+              <option [value]="cat">{{ cat }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Language *</label>
+            <select [(ngModel)]="bookForm.language" name="language" required class="form-control">
+              @for (lang of languages; track lang) {
+              <option [value]="lang">{{ lang }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="form-checkbox">
+          <label>
+            <input type="checkbox" [(ngModel)]="bookForm.publish_on_website" name="publish_on_website" />
+            <span>Show on Public Website (Publish ON/OFF)</span>
+          </label>
+        </div>
+
+        <!-- Cover Image Upload Section -->
+        <div class="image-upload-section">
+          <label>Book Cover Image (Optional)</label>
+          <p class="section-hint">Book cover image is optional. Upload if the book will be shown on the public website
+            or stored in library catalog.</p>
+
+          <div class="cover-management-box">
+            @if (bookForm.image_url) {
+            <div class="preview-wrap">
+              <img [src]="bookForm.image_url" alt="Cover Preview" class="cover-preview" />
+              <div class="preview-actions">
+                <label class="btn btn--outline-gold btn--sm upload-btn">
+                  <span>Replace Cover Image</span>
+                  <input type="file" (change)="onCoverFileSelected($event)" accept="image/jpeg,image/png,image/webp"
+                    hidden />
+                </label>
+                <button type="button" (click)="removeCoverImage()" class="btn btn--outline btn--sm text-red">
+                  Remove Image
+                </button>
+              </div>
+            </div>
+            } @else {
+            <div class="dropzone">
+              <div class="dropzone-icon">📷</div>
+              <span>Drag & Drop Cover Image or Browse File</span>
+              <small>Supports JPG, JPEG, PNG, WebP (Max size: 5MB)</small>
+              <label class="btn btn--outline-gold btn--sm upload-btn">
+                <span>+ Upload Book Cover</span>
+                <input type="file" (change)="onCoverFileSelected($event)" accept="image/jpeg,image/png,image/webp"
+                  hidden />
+              </label>
+            </div>
+            }
+
+            @if (isUploadingCover()) {
+            <div class="upload-progress">Uploading cover image...</div>
+            }
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" (click)="closeModal()" class="btn btn--outline">Cancel</button>
+          <button type="submit" class="btn btn--primary">
+            {{ isEditing() ? 'Save Book Changes' : 'Create Book' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  }
+
+
+  <!-- Image Editor Modal -->
+  @if (isImageEditorOpen()) {
+  <div class="image-editor-backdrop" (click)="closeImageEditor()">
+    <div class="image-editor-modal" (click)="$event.stopPropagation()">
+
+      <div class="image-editor-header">
+        <div>
+          <h3>Edit Book Cover</h3>
+
+          @if (selectedImageName()) {
+          <p>{{ selectedImageName() }}</p>
+          }
+        </div>
+
+        <button type="button" class="image-editor-close" (click)="closeImageEditor()">
+          &times;
+        </button>
+      </div>
+
+      <div class="image-editor-body">
+
+        <!-- Cropper -->
+        <div class="cropper-container">
+
+          @if (selectedImageFile) {
+          <image-cropper [imageFile]="selectedImageFile" [maintainAspectRatio]="true" [aspectRatio]="2 / 3"
+            [resizeToWidth]="1200" [onlyScaleDown]="true" [format]="'webp'" [output]="'blob'" [imageQuality]="82"
+            [transform]="imageTransform" [backgroundColor]="'#0d1b2a'" [containWithinAspectRatio]="true"
+            (imageCropped)="onImageCropped($event)" (loadImageFailed)="onCropperLoadFailed()">
+          </image-cropper>
+          }
+
+        </div>
+
+        <!-- Controls -->
+        <div class="image-editor-controls">
+
+          <button type="button" class="image-editor-control-btn" (click)="rotateLeft()">
+            ↶ Rotate Left
+          </button>
+
+          <button type="button" class="image-editor-control-btn" (click)="rotateRight()">
+            ↷ Rotate Right
+          </button>
+
+          <button type="button" class="image-editor-control-btn" (click)="resetImageEditor()">
+            ↺ Reset
+          </button>
+
+          <button type="button" class="image-editor-control-btn" (click)="zoomOut()">
+            − Zoom Out
+          </button>
+
+          <button type="button" class="image-editor-control-btn" (click)="zoomIn()">
+            + Zoom In
+          </button>
+
+        </div>
+
+        <!-- Preview -->
+        @if (croppedImageUrl()) {
+        <div class="image-editor-preview-section">
+
+          <div>
+            <span class="image-editor-preview-label">
+              Preview
+            </span>
+
+            <div class="image-editor-preview">
+              @if (croppedImageUrl()) {
+              <img [src]="croppedImageUrl()!" alt="Cropped book cover preview" />
+              }
+            </div>
+          </div>
+
+          <div class="image-editor-info">
+            <strong>Optimized automatically</strong>
+
+            <span>
+              WebP format
+            </span>
+
+            <span>
+              Maximum 1200 × 1800 px
+            </span>
+
+            <span>
+              Quality optimized for web
+            </span>
+          </div>
+
+        </div>
+        }
+
+      </div>
+
+      <div class="image-editor-footer">
+
+        <button type="button" class="btn btn--outline" (click)="closeImageEditor()" [disabled]="isUploadingCover()">
+          Cancel
+        </button>
+
+        <button type="button" class="btn btn--outline-gold" (click)="resetImageEditor()"
+          [disabled]="isUploadingCover()">
+          Reset
+        </button>
+
+        <button type="button" class="btn btn--primary" (click)="useEditedImage()"
+          [disabled]="!croppedImageBlob || isUploadingCover()">
+          @if (isUploadingCover()) {
+          Uploading...
+          } @else {
+          Use This Image
+          }
+        </button>
+
+      </div>
+
+    </div>
+  </div>
+  }
+
+  <!-- Book Details & Borrowing History Modal -->
+  @if (isDetailsModalOpen()) {
+  <div class="modal-backdrop" (click)="closeDetailsModal()">
+    <div class="modal-card modal-card--lg" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Book Details & History — {{ selectedBookDetails()?.book?.title }} ({{ selectedBookDetails()?.book?.book_id
+          }})</h3>
+        <button (click)="closeDetailsModal()" class="close-btn">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        @if (isLoadingDetails()) {
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <span>Fetching book history...</span>
+        </div>
+        } @else if (selectedBookDetails()) {
+        <div class="details-top-summary">
+          <div class="detail-box">
+            <span class="detail-label">Author</span>
+            <span class="detail-val">{{ selectedBookDetails()?.book?.author }}</span>
+          </div>
+          <div class="detail-box">
+            <span class="detail-label">Status</span>
+            <span class="badge"
+              [ngClass]="selectedBookDetails()?.book?.status === 'available' ? 'badge--available' : 'badge--unavailable'">
+              {{ selectedBookDetails()?.book?.status | uppercase }}
+            </span>
+          </div>
+          <div class="detail-box">
+            <span class="detail-label">Times Borrowed</span>
+            <span class="detail-val">{{ selectedBookDetails()?.times_borrowed }}</span>
+          </div>
+          <div class="detail-box">
+            <span class="detail-label">Total Revenue Collected</span>
+            <span class="detail-val gold">₹{{ selectedBookDetails()?.total_amount_collected | number:'1.2-2' }}</span>
+          </div>
+        </div>
+
+        @if (selectedBookDetails()?.current_borrower) {
+        <div class="current-borrower-alert">
+          <strong>Currently Borrowed By:</strong> {{ selectedBookDetails()?.current_borrower?.member_name }} ({{
+          selectedBookDetails()?.current_borrower?.member_id }}) | Borrowed: {{
+          selectedBookDetails()?.current_borrower?.borrowed_date }} | Due: {{
+          selectedBookDetails()?.current_borrower?.due_date }}
+        </div>
+        }
+
+        <h4 class="history-title">Borrowing History</h4>
+        @if (!selectedBookDetails()?.history || selectedBookDetails()?.history.length === 0) {
+        <p class="empty-text">No lending history recorded for this book yet.</p>
+        } @else {
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Member Name</th>
+              <th>Borrowed Date</th>
+              <th>Due Date</th>
+              <th>Returned Date</th>
+              <th>Item Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (rec of selectedBookDetails()?.history; track rec.order_id) {
+            <tr>
+              <td><span class="id-badge">{{ rec.order_id }}</span></td>
+              <td>{{ rec.member_name }} ({{ rec.member_id }})</td>
+              <td>{{ rec.borrowed_date }}</td>
+              <td>{{ rec.due_date }}</td>
+              <td>
+                @if (rec.returned) {
+                <span class="text-green">Returned on {{ rec.returned_date }}</span>
+                } @else {
+                <span class="text-red">Not Returned</span>
+                }
+              </td>
+              <td>₹{{ rec.item_price }}</td>
+            </tr>
+            }
+          </tbody>
+        </table>
+        }
+        }
+      </div>
+
+      <div class="modal-footer">
+        <button (click)="closeDetailsModal()" class="btn btn--outline">Close</button>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Multi-step CSV Import Modal -->
+  @if (isCSVModalOpen()) {
+  <div class="modal-backdrop" (click)="closeCSVModal()">
+    <div class="modal-card modal-card--lg" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Import Books CSV (Step {{ csvStep() }} of 2)</h3>
+        <button (click)="closeCSVModal()" class="close-btn">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Step 1: Upload CSV -->
+        @if (csvStep() === 1) {
+        <p>Upload a UTF-8 CSV file with required headers: <code>title,author,price,category,language</code>.</p>
+        <div class="csv-upload-box">
+          <input type="file" (change)="onCSVFileChange($event)" accept=".csv" class="form-control" />
+          <button (click)="analyzeCSV()" [disabled]="!selectedCSVFile || isAnalyzingCSV()" class="btn btn--primary">
+            @if (isAnalyzingCSV()) {
+            Analyzing CSV...
+            } @else {
+            Validate & Preview CSV
+            }
+          </button>
+        </div>
+        }
+
+        <!-- Step 2: Preview Summary & Errors -->
+        @if (csvStep() === 2 && csvSummary()) {
+        <div class="csv-summary-boxes">
+          <div class="sum-box">Total Rows: <strong>{{ csvSummary()?.total_rows }}</strong></div>
+          <div class="sum-box green">Valid Records: <strong>{{ csvSummary()?.imported }}</strong></div>
+          <div class="sum-box red">Errors / Invalid: <strong>{{ csvSummary()?.failed }}</strong></div>
+        </div>
+
+        @if (csvSummary()?.errors?.length) {
+        <div class="csv-errors-card">
+          <h4>Problematic Rows Breakdown:</h4>
+          <div class="errors-scroll">
+            @for (err of csvSummary()?.errors; track err.row) {
+            <div class="error-item">
+              Row {{ err.row }} (Field: {{ err.field }}): {{ err.message }}
+            </div>
+            }
+          </div>
+        </div>
+        }
+
+        <div class="modal-footer">
+          <button (click)="csvStep.set(1)" class="btn btn--outline">Back</button>
+          <button (click)="confirmCSVImport()" [disabled]="isAnalyzingCSV() || csvSummary()?.imported === 0"
+            class="btn btn--primary">
+            Confirm & Import {{ csvSummary()?.imported }} Books
+          </button>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+  }
+</div>

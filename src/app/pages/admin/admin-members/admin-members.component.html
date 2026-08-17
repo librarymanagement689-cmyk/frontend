@@ -1,0 +1,257 @@
+<div class="admin-members-page">
+  <div class="page-header">
+    <div>
+      <h2>Member Management (MEM-XXXXX)</h2>
+      <p>Register, track, and manage library members and subscriptions</p>
+    </div>
+    <button (click)="openAddModal()" class="btn btn--primary">
+      ➕ Add New Member
+    </button>
+  </div>
+
+  @if (successMessage()) {
+    <div class="alert alert--success">
+      {{ successMessage() }}
+    </div>
+  }
+
+  @if (errorMessage()) {
+    <div class="alert alert--error">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  <!-- Filters -->
+  <div class="filters-bar">
+    <div class="search-wrap">
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        (keyup.enter)="onSearch()"
+        placeholder="Search name, phone, email, or MEM-XXXXX ID..."
+        class="form-control"
+      />
+      <button (click)="onSearch()" class="btn btn--outline-gold btn--sm">Search</button>
+    </div>
+
+    <div class="filter-group">
+      <select [(ngModel)]="selectedStatus" (change)="onSearch()" class="form-control">
+        <option value="">All Statuses</option>
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+        <option value="expired">Expired</option>
+      </select>
+
+      <select [(ngModel)]="selectedSubscription" (change)="onSearch()" class="form-control">
+        <option value="">All Subscriptions</option>
+        @for (sub of subscriptions(); track sub.subscription_id) {
+          <option [value]="sub.subscription_id">{{ sub.name }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <!-- Members Table -->
+  <div class="table-card">
+    @if (isLoading()) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <span>Loading library members...</span>
+      </div>
+    } @else if (members().length === 0) {
+      <div class="empty-state">
+        <p>No members found matching your search.</p>
+      </div>
+    } @else {
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Member ID</th>
+            <th>Name</th>
+            <th>Contact</th>
+            <th>Subscription</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (member of members(); track member.member_id) {
+            <tr>
+              <td><span class="id-badge">{{ member.member_id }}</span></td>
+              <td class="font-semibold">{{ member.name }}</td>
+              <td>
+                <div class="contact-info">
+                  <span>📞 {{ member.phone }}</span>
+                  <small>✉️ {{ member.email }}</small>
+                </div>
+              </td>
+              <td><span class="tag-pill">{{ getSubscriptionName(member.subscription_type_id) }}</span></td>
+              <td>{{ member.subscription_start_date }}</td>
+              <td>{{ member.subscription_end_date }}</td>
+              <td>
+                <span class="badge" [ngClass]="{
+                  'badge--available': member.status === 'active',
+                  'badge--unavailable': member.status === 'inactive' || member.status === 'expired'
+                }">
+                  {{ member.status | uppercase }}
+                </span>
+              </td>
+              <td>
+                <div class="action-buttons">
+                  <button (click)="openHistoryModal(member)" class="btn-action history" title="View Borrowing History">📜 History</button>
+                  <button (click)="openEditModal(member)" class="btn-action edit" title="Edit Member">✏️ Edit</button>
+                  <button (click)="deleteMember(member)" class="btn-action delete" title="Delete Member">🗑️</button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      <!-- Pagination -->
+      <div class="table-pagination">
+        <span>Showing page {{ currentPage }} of {{ totalPages() }} ({{ totalCount() }} total members)</span>
+        <div class="page-controls">
+          <button (click)="loadMembers(currentPage - 1)" [disabled]="currentPage <= 1" class="btn btn--outline btn--sm">
+            Previous
+          </button>
+          <button (click)="loadMembers(currentPage + 1)" [disabled]="currentPage >= totalPages()" class="btn btn--outline btn--sm">
+            Next
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Add/Edit Member Modal -->
+  @if (isModalOpen()) {
+    <div class="modal-backdrop" (click)="closeModal()">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>{{ isEditing() ? 'Edit Member (' + editingMemberId() + ')' : 'Register New Member' }}</h3>
+          <button (click)="closeModal()" class="close-btn">&times;</button>
+        </div>
+
+        <form (ngSubmit)="saveMember()" class="modal-body">
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" [(ngModel)]="memberForm.name" name="name" required class="form-control" placeholder="Member Full Name" />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Phone Number *</label>
+              <input type="tel" [(ngModel)]="memberForm.phone" name="phone" required class="form-control" placeholder="+91 9876543210" />
+            </div>
+
+            <div class="form-group">
+              <label>Email Address *</label>
+              <input type="email" [(ngModel)]="memberForm.email" name="email" required class="form-control" placeholder="member@gmail.com" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Subscription Plan *</label>
+            <select [(ngModel)]="memberForm.subscription_type_id" (change)="onSubscriptionChange()" name="subscription_type_id" required class="form-control">
+              @for (sub of subscriptions(); track sub.subscription_id) {
+                <option [value]="sub.subscription_id">
+                  {{ sub.name }} ({{ sub.duration_days }} Days — ₹{{ sub.price }})
+                </option>
+              }
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Start Date *</label>
+              <input type="date" [(ngModel)]="memberForm.subscription_start_date" (change)="onSubscriptionChange()" name="subscription_start_date" required class="form-control" />
+            </div>
+
+            <div class="form-group">
+              <label>End Date *</label>
+              <input type="date" [(ngModel)]="memberForm.subscription_end_date" name="subscription_end_date" required class="form-control" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Status *</label>
+            <select [(ngModel)]="memberForm.status" name="status" class="form-control">
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+              <option value="expired">Expired</option>
+            </select>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" (click)="closeModal()" class="btn btn--outline">Cancel</button>
+            <button type="submit" class="btn btn--primary">
+              {{ isEditing() ? 'Save Changes' : 'Register Member' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
+  <!-- History Modal -->
+  @if (isHistoryModalOpen()) {
+    <div class="modal-backdrop" (click)="closeHistoryModal()">
+      <div class="modal-card modal-card--lg" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Borrowing History — {{ selectedMemberForHistory()?.name }} ({{ selectedMemberForHistory()?.member_id }})</h3>
+          <button (click)="closeHistoryModal()" class="close-btn">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          @if (isLoadingHistory()) {
+            <div class="loading-state">
+              <div class="spinner"></div>
+              <span>Fetching order history...</span>
+            </div>
+          } @else if (memberHistory().length === 0) {
+            <p class="empty-text">No lending history recorded for this member.</p>
+          } @else {
+            <div class="history-list">
+              @for (order of memberHistory(); track order.order_id) {
+                <div class="history-card">
+                  <div class="history-card-header">
+                    <strong>Order {{ order.order_id }}</strong>
+                    <span class="badge" [ngClass]="order.status === 'active' ? 'badge--available' : 'badge--unavailable'">
+                      {{ order.status | uppercase }}
+                    </span>
+                  </div>
+                  <div class="history-details">
+                    <span><strong>Borrowed:</strong> {{ order.borrowed_date }}</span>
+                    <span><strong>Due:</strong> {{ order.due_date }}</span>
+                    <span><strong>Amount Paid:</strong> ₹{{ order.amount_paid }}</span>
+                  </div>
+                  <div class="history-items">
+                    <span>Books:</span>
+                    <ul>
+                      @for (item of order.items; track item.book_id) {
+                        <li>
+                          {{ item.title }} ({{ item.book_id }}) - ₹{{ item.price }}
+                          @if (item.returned) {
+                            <span class="returned-tag">Returned on {{ item.returned_date }}</span>
+                          } @else {
+                            <span class="borrowed-tag">Not Returned</span>
+                          }
+                        </li>
+                      }
+                    </ul>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="modal-footer">
+          <button (click)="closeHistoryModal()" class="btn btn--outline">Close</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

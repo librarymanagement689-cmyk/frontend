@@ -1,0 +1,138 @@
+<div class="reports-page">
+  <div class="page-header">
+    <div>
+      <h2>Operational & Financial Reports</h2>
+      <p>View daily and monthly collection summaries and export CSV statements</p>
+    </div>
+    <button (click)="exportCSV()" class="btn btn--primary btn--sm">
+      📥 Export Report CSV
+    </button>
+  </div>
+
+  <!-- Tab selector -->
+  <div class="tabs-header">
+    <button (click)="switchTab('daily')" [class.active]="activeTab === 'daily'" class="tab-btn">
+      📅 Daily Collection Report
+    </button>
+    <button (click)="switchTab('monthly')" [class.active]="activeTab === 'monthly'" class="tab-btn">
+      📊 Monthly Revenue Summary
+    </button>
+  </div>
+
+  <!-- Daily Report View -->
+  @if (activeTab === 'daily') {
+    <div class="filter-card">
+      <label>Select Date:</label>
+      <input type="date" [(ngModel)]="selectedDate" (change)="loadDailyReport()" class="form-control" />
+    </div>
+
+    @if (isLoading()) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <span>Generating daily report...</span>
+      </div>
+    } @else if (dailyReport()) {
+      <div class="summary-cards">
+        <div class="summary-card">
+          <span class="card-label">Date</span>
+          <span class="card-value">{{ dailyReport().report_date }}</span>
+        </div>
+
+        <div class="summary-card">
+          <span class="card-label">Orders Issued</span>
+          <span class="card-value">{{ dailyReport().total_orders }}</span>
+        </div>
+
+        <div class="summary-card">
+          <span class="card-label">Books Issued</span>
+          <span class="card-value">{{ dailyReport().total_books_issued }}</span>
+        </div>
+
+        <div class="summary-card highlight">
+          <span class="card-label">Total Collection</span>
+          <span class="card-value">₹{{ dailyReport().total_collection | number:'1.2-2' }}</span>
+        </div>
+      </div>
+
+      <!-- Orders Breakdown Table -->
+      <div class="table-card">
+        <h3>Orders Issued on {{ dailyReport().report_date }}</h3>
+        @if (!dailyReport().orders || dailyReport().orders.length === 0) {
+          <p class="empty-text">No lending orders recorded for this date.</p>
+        } @else {
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Member ID</th>
+                <th>Books</th>
+                <th>Subtotal</th>
+                <th>Amount Paid</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (order of dailyReport().orders; track order.order_id) {
+                <tr>
+                  <td><span class="id-badge">{{ order.order_id }}</span></td>
+                  <td><span class="member-badge">{{ order.member_id }}</span></td>
+                  <td>
+                    <ul class="items-list">
+                      @for (item of order.items; track item.book_id) {
+                        <li>{{ item.title }} (₹{{ item.price }})</li>
+                      }
+                    </ul>
+                  </td>
+                  <td>₹{{ order.subtotal | number:'1.2-2' }}</td>
+                  <td><strong>₹{{ order.amount_paid | number:'1.2-2' }}</strong></td>
+                  <td>
+                    <span class="badge" [ngClass]="order.status === 'returned' ? 'badge--available' : 'badge--active'">
+                      {{ order.status | uppercase }}
+                    </span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      </div>
+    }
+  }
+
+  <!-- Monthly Report View -->
+  @if (activeTab === 'monthly') {
+    <div class="filter-card">
+      <label>Select Month:</label>
+      <input type="month" [(ngModel)]="selectedMonth" (change)="loadMonthlyReport()" class="form-control" />
+    </div>
+
+    @if (isLoading()) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <span>Generating monthly report...</span>
+      </div>
+    } @else if (monthlyReport()) {
+      <div class="summary-cards">
+        <div class="summary-card">
+          <span class="card-label">Month</span>
+          <span class="card-value">{{ monthlyReport().year_month }}</span>
+        </div>
+
+        <div class="summary-card">
+          <span class="card-label">Total Monthly Orders</span>
+          <span class="card-value">{{ monthlyReport().total_orders }}</span>
+        </div>
+
+        <div class="summary-card">
+          <span class="card-label">Total Books Issued</span>
+          <span class="card-value">{{ monthlyReport().total_books_issued }}</span>
+        </div>
+
+        <div class="summary-card highlight">
+          <span class="card-label">Total Monthly Revenue</span>
+          <span class="card-value">₹{{ monthlyReport().total_revenue | number:'1.2-2' }}</span>
+        </div>
+      </div>
+    }
+  }
+</div>

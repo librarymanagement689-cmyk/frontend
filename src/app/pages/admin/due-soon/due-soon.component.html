@@ -1,0 +1,75 @@
+<div class="due-soon-page">
+  <div class="page-header">
+    <div>
+      <h2>Due Soon Loans</h2>
+      <p>Monitor active book loans approaching return due dates within 3 days</p>
+    </div>
+    <button (click)="loadDueSoonOrders()" class="btn btn--outline-gold btn--sm">
+      🔄 Refresh List
+    </button>
+  </div>
+
+  <div class="table-card">
+    @if (isLoading()) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <span>Checking due dates...</span>
+      </div>
+    } @else if (orders().length === 0) {
+      <div class="empty-state">
+        <p>No active loans approaching due date within 3 days.</p>
+      </div>
+    } @else {
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Member ID</th>
+              <th>Borrowed Books</th>
+              <th>Due Date</th>
+              <th>Days Remaining</th>
+              <th>Reminder Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (order of orders(); track order.order_id) {
+              <tr>
+                <td><span class="id-badge">{{ order.order_id }}</span></td>
+                <td><span class="member-badge">{{ order.member_id }}</span></td>
+                <td>
+                  <ul class="items-list">
+                    @for (item of order.items; track item.book_id) {
+                      <li>{{ item.title }} ({{ item.book_id }})</li>
+                    }
+                  </ul>
+                </td>
+                <td><strong>{{ order.due_date }}</strong></td>
+                <td>
+                  <span class="days-pill" [ngClass]="getDaysRemaining(order.due_date) <= 1 ? 'urgent' : 'normal'">
+                    {{ getDaysRemaining(order.due_date) }} day(s) left
+                  </span>
+                </td>
+                <td>
+                  <span class="status-pill" [ngClass]="order.reminder_sent ? 'sent' : 'pending'">
+                    {{ order.reminder_sent ? 'Sent ✓' : 'Not Sent' }}
+                  </span>
+                </td>
+                <td>
+                  <button
+                    (click)="sendReminder(order)"
+                    [disabled]="sendingReminder() === order.order_id"
+                    class="btn btn--outline-gold btn--sm"
+                  >
+                    📧 Send Reminder
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>

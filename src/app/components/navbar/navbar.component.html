@@ -1,0 +1,92 @@
+<header class="navbar" [class.navbar--scrolled]="scrolled()">
+  <div class="container navbar__inner">
+
+    <!-- Logo -->
+    <a routerLink="/" class="navbar__brand" (click)="closeMenu()" aria-label="Sri Krishna Lending Library Home">
+      <picture class="navbar__logo-wrap">
+        <source srcset="assets/images/logo.webp" type="image/webp">
+        <img
+          src="assets/images/logo.png"
+          alt="Sri Krishna Lending Library Peacock Feather & Book Logo"
+          class="navbar__logo"
+          width="54"
+          height="54"
+          loading="eager"
+          fetchpriority="high"
+        >
+      </picture>
+      <div class="navbar__brand-text">
+        <span class="navbar__brand-name">SriKrishna</span>
+        <span class="navbar__brand-sub">Lending Library</span>
+      </div>
+    </a>
+
+    <!-- Desktop nav -->
+    <nav class="navbar__nav" aria-label="Main navigation">
+      <ul class="navbar__links" role="list">
+        @for (item of navItems; track item.route) {
+          <li>
+            <a
+              [routerLink]="item.route"
+              routerLinkActive="navbar__link--active"
+              [routerLinkActiveOptions]="{ exact: item.route === '/' }"
+              class="navbar__link"
+            >{{ item.label }}</a>
+          </li>
+        }
+      </ul>
+      <a routerLink="/books" class="btn btn--primary btn--sm navbar__cta">
+        Explore Books
+      </a>
+    </nav>
+
+    <!-- Mobile hamburger -->
+    <button
+      class="navbar__hamburger"
+      [class.navbar__hamburger--open]="menuOpen()"
+      (click)="toggleMenu()"
+      aria-label="Toggle navigation menu"
+      [attr.aria-expanded]="menuOpen()"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+
+  <!-- Mobile drawer -->
+  <div
+    class="navbar__drawer"
+    [class.navbar__drawer--open]="menuOpen()"
+    role="dialog"
+    aria-label="Navigation menu"
+  >
+    <nav>
+      <ul class="navbar__drawer-links" role="list">
+        @for (item of navItems; track item.route) {
+          <li>
+            <a
+              [routerLink]="item.route"
+              routerLinkActive="navbar__drawer-link--active"
+              [routerLinkActiveOptions]="{ exact: item.route === '/' }"
+              class="navbar__drawer-link"
+              (click)="closeMenu()"
+            >{{ item.label }}</a>
+          </li>
+        }
+      </ul>
+      <a
+        routerLink="/books"
+        class="btn btn--primary navbar__drawer-cta"
+        (click)="closeMenu()"
+      >
+        Explore Books
+      </a>
+    </nav>
+  </div>
+
+  <!-- Backdrop -->
+  @if (menuOpen()) {
+    <div class="navbar__backdrop" (click)="closeMenu()" aria-hidden="true"></div>
+  }
+</header>

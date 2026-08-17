@@ -1,0 +1,59 @@
+<article class="book-card" [attr.aria-label]="book.title + ' by ' + (book.author || 'Unknown')">
+  <a
+    [routerLink]="showLink ? ['/books', book.id] : null"
+    class="book-card__image-wrap"
+    [attr.tabindex]="showLink ? '0' : '-1'"
+    [attr.aria-label]="showLink ? ('View details for ' + book.title) : null"
+  >
+    <!-- Actual cover image -->
+    @if (book.imageUrl && !imgError()) {
+      <img
+        [src]="book.imageUrl"
+        [alt]="book.title + ' cover'"
+        class="book-card__image"
+        loading="lazy"
+        (error)="onImgError()"
+      >
+    }
+
+    <!-- Placeholder when no image or error -->
+    @if (!book.imageUrl || imgError()) {
+      <div class="book-card__placeholder" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+        </svg>
+        <span class="book-card__placeholder-title">{{ book.title }}</span>
+      </div>
+    }
+
+    <!-- Availability badge overlay -->
+    <div class="book-card__badge-wrap">
+      <span
+        class="badge"
+        [class.badge--available]="book.available"
+        [class.badge--unavailable]="!book.available"
+      >
+        <span class="dot" aria-hidden="true"></span>
+        {{ book.available ? 'Available' : 'Unavailable' }}
+      </span>
+    </div>
+  </a>
+
+  <div class="book-card__body">
+    <div class="book-card__meta">
+      @if (book.category) {
+        <span class="book-card__category">{{ book.category }}</span>
+      }
+    </div>
+    <h3 class="book-card__title">
+      @if (showLink) {
+        <a [routerLink]="['/books', book.id]" class="book-card__title-link">{{ book.title }}</a>
+      } @else {
+        {{ book.title }}
+      }
+    </h3>
+    @if (book.author) {
+      <p class="book-card__author">{{ book.author }}</p>
+    }
+  </div>
+</article>

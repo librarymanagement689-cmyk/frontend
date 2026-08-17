@@ -1,0 +1,291 @@
+<div class="admin-orders-page">
+  <div class="page-header">
+    <div>
+      <h2>Lending Orders & Returns (ORD-XXXXX)</h2>
+      <p>Issue book loans, calculate authoritative prices, track due dates, and process book returns</p>
+    </div>
+    <div class="header-actions">
+      <button (click)="sendReminders()" class="btn btn--outline-gold">
+        📧 Send Due Date Reminders
+      </button>
+      <button (click)="openCreateModal()" class="btn btn--primary">
+        ➕ Create Lending Order
+      </button>
+    </div>
+  </div>
+
+  @if (successMessage()) {
+    <div class="alert alert--success">
+      {{ successMessage() }}
+    </div>
+  }
+
+  @if (errorMessage()) {
+    <div class="alert alert--error">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  <!-- Filters -->
+  <div class="filters-bar">
+    <div class="search-wrap">
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        (keyup.enter)="onSearch()"
+        placeholder="Search order ID, member ID, or book title..."
+        class="form-control"
+      />
+      <button (click)="onSearch()" class="btn btn--outline-gold btn--sm">Search</button>
+    </div>
+
+    <div class="filter-group">
+      <select [(ngModel)]="selectedStatus" (change)="onSearch()" class="form-control">
+        <option value="">All Order Statuses</option>
+        <option value="active">Active Loans</option>
+        <option value="overdue">Overdue Loans</option>
+        <option value="returned">Fully Returned</option>
+        <option value="cancelled">Cancelled</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Orders Table -->
+  <div class="table-card">
+    @if (isLoading()) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <span>Loading lending orders...</span>
+      </div>
+    } @else if (orders().length === 0) {
+      <div class="empty-state">
+        <p>No lending orders found matching your search.</p>
+      </div>
+    } @else {
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Member ID</th>
+            <th>Borrowed Books & Master Prices</th>
+            <th>Dates (Borrowed / Due)</th>
+            <th>Subtotal</th>
+            <th>Amount Paid</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (order of orders(); track order.order_id) {
+            <tr>
+              <td><span class="id-badge">{{ order.order_id }}</span></td>
+              <td><span class="member-badge">{{ order.member_id }}</span></td>
+              <td>
+                <ul class="order-items-list">
+                  @for (item of order.items; track item.book_id) {
+                    <li>
+                      <strong>{{ item.title }}</strong> ({{ item.book_id }}) — ₹{{ item.price | number:'1.2-2' }}
+                      @if (item.returned) {
+                        <span class="status-pill returned">Returned ({{ item.returned_date }})</span>
+                      } @else {
+                        <span class="status-pill borrowed">With Member</span>
+                      }
+                    </li>
+                  }
+                </ul>
+              </td>
+              <td>
+                <div class="dates-box">
+                  <span>📅 Borrowed: {{ order.borrowed_date }}</span>
+                  <span [ngClass]="{'text-red': order.status === 'overdue'}">⌛ Due: {{ order.due_date }}</span>
+                </div>
+              </td>
+              <td><strong>₹{{ order.subtotal | number:'1.2-2' }}</strong></td>
+              <td>₹{{ order.amount_paid | number:'1.2-2' }}</td>
+              <td>
+                <span class="badge" [ngClass]="{
+                  'badge--available': order.status === 'returned',
+                  'badge--active': order.status === 'active',
+                  'badge--unavailable': order.status === 'overdue' || order.status === 'cancelled'
+                }">
+                  {{ order.status | uppercase }}
+                </span>
+              </td>
+              <td>
+                @if (order.status === 'active' || order.status === 'overdue') {
+                  <button (click)="openReturnModal(order)" class="btn-action return-btn">
+                    ↩️ Return Books
+                  </button>
+                } @else {
+                  <span class="done-text">Completed</span>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      <!-- Pagination -->
+      <div class="table-pagination">
+        <span>Showing page {{ currentPage }} of {{ totalPages() }} ({{ totalCount() }} total orders)</span>
+        <div class="page-controls">
+          <button (click)="loadOrders(currentPage - 1)" [disabled]="currentPage <= 1" class="btn btn--outline btn--sm">
+            Previous
+          </button>
+          <button (click)="loadOrders(currentPage + 1)" [disabled]="currentPage >= totalPages()" class="btn btn--outline btn--sm">
+            Next
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Create Order Modal -->
+  @if (isCreateModalOpen()) {
+    <div class="modal-backdrop" (click)="closeCreateModal()">
+      <div class="modal-card modal-card--lg" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Create New Lending Order</h3>
+          <button (click)="closeCreateModal()" class="close-btn">&times;</button>
+        </div>
+
+        <form (ngSubmit)="submitCreateOrder()" class="modal-body">
+          <!-- Member Selection -->
+          <div class="form-group">
+            <label>Select Active Member *</label>
+            <select [(ngModel)]="selectedMemberId" name="selectedMemberId" required class="form-control">
+              <option value="">-- Choose Member --</option>
+              @for (m of members(); track m.member_id) {
+                <option [value]="m.member_id">
+                  {{ m.name }} ({{ m.member_id }}) — Phone: {{ m.phone }}
+                </option>
+              }
+            </select>
+          </div>
+
+          <!-- Book Selection & Authoritative Price Snapshot -->
+          <div class="form-group">
+            <label>Select Available Book to Add *</label>
+            <div class="add-book-row">
+              <select [(ngModel)]="selectedBookIdToAdd" name="selectedBookIdToAdd" class="form-control">
+                <option value="">-- Choose Available Book --</option>
+                @for (b of availableBooks(); track b.book_id) {
+                  <option [value]="b.book_id">
+                    {{ b.title }} by {{ b.author }} ({{ b.book_id }}) — Master Price: ₹{{ b.price }}
+                  </option>
+                }
+              </select>
+              <button type="button" (click)="addBookToOrder()" class="btn btn--outline-gold">
+                + Add Book
+              </button>
+            </div>
+          </div>
+
+          <!-- Selected Books List & Backend Prices -->
+          @if (selectedBooks.length > 0) {
+            <div class="selected-books-box">
+              <label>Selected Order Items (Backend Authoritative Prices):</label>
+              <table class="selected-books-table">
+                <thead>
+                  <tr>
+                    <th>Book ID</th>
+                    <th>Title & Author</th>
+                    <th>Price</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (b of selectedBooks; track b.book_id) {
+                    <tr>
+                      <td><span class="id-badge">{{ b.book_id }}</span></td>
+                      <td>{{ b.title }} <small>by {{ b.author }}</small></td>
+                      <td><strong>₹{{ b.price | number:'1.2-2' }}</strong></td>
+                      <td>
+                        <button type="button" (click)="removeBookFromOrder(b.book_id)" class="remove-btn">
+                          ✕ Remove
+                        </button>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+
+              <div class="subtotal-display">
+                <span>Calculated Subtotal:</span>
+                <span class="subtotal-amount">₹{{ calculatedSubtotal | number:'1.2-2' }}</span>
+              </div>
+            </div>
+          }
+
+          <!-- Dates & Payment -->
+          <div class="form-row">
+            <div class="form-group">
+              <label>Borrowed Date *</label>
+              <input type="date" [(ngModel)]="borrowedDate" name="borrowedDate" required class="form-control" />
+            </div>
+
+            <div class="form-group">
+              <label>Due Date *</label>
+              <input type="date" [(ngModel)]="dueDate" name="dueDate" required class="form-control" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Amount Paid (₹) *</label>
+            <input type="number" [(ngModel)]="amountPaid" name="amountPaid" required min="0" step="0.01" class="form-control" />
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" (click)="closeCreateModal()" class="btn btn--outline">Cancel</button>
+            <button type="submit" class="btn btn--primary" [disabled]="selectedBooks.length === 0">
+              Confirm & Issue Loan Order
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
+  <!-- Return Books Modal -->
+  @if (isReturnModalOpen()) {
+    <div class="modal-backdrop" (click)="closeReturnModal()">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3>Return Books for Order {{ orderToReturn()?.order_id }}</h3>
+          <button (click)="closeReturnModal()" class="close-btn">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <p>Select the books to return. Returned books will immediately update backend availability to <strong>available</strong>.</p>
+
+          <div class="return-items-list">
+            @for (item of orderToReturn()?.items; track item.book_id) {
+              <div class="return-item-row">
+                @if (item.returned) {
+                  <span class="already-returned">
+                    ✅ {{ item.title }} ({{ item.book_id }}) — Returned on {{ item.returned_date }}
+                  </span>
+                } @else {
+                  <label class="checkbox-label">
+                    <input
+                      type="checkbox"
+                      [(ngModel)]="selectedBookIdsToReturn[item.book_id]"
+                    />
+                    <span><strong>{{ item.title }}</strong> ({{ item.book_id }}) — Price: ₹{{ item.price }}</span>
+                  </label>
+                }
+              </div>
+            }
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" (click)="closeReturnModal()" class="btn btn--outline">Cancel</button>
+            <button (click)="submitReturnBooks()" class="btn btn--primary">
+              Confirm Return Selected Books
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

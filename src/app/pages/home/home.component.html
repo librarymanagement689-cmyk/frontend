@@ -1,0 +1,299 @@
+<!-- =====================================================================
+  HOME PAGE — Sri Krishna Lending Library
+  Editorial redesign: warm ivory, institutional, book-focused
+  ===================================================================== -->
+
+<!-- ── HERO ──────────────────────────────────────────────────────────── -->
+<section class="hero" aria-labelledby="hero-heading">
+  <div class="container hero__inner">
+
+    <!-- Left: editorial text content -->
+    <div class="hero__content">
+      <span class="hero__label" aria-hidden="true">Sri Krishna Lending Library</span>
+
+      <h1 id="hero-heading" class="hero__heading">
+        Find your<br>next book.
+      </h1>
+
+      <p class="hero__copy">
+        Explore our collection of books across literature, history,
+        spirituality, science and more. Something for every reader.
+      </p>
+
+      <div class="hero__actions">
+        <a routerLink="/books" class="btn btn--primary-dark hero__cta-primary" id="hero-explore-books">
+          Explore Books
+        </a>
+        <a routerLink="/about" class="btn btn--text-link" id="hero-about-link">
+          Learn about the library →
+        </a>
+      </div>
+    </div>
+
+    <!-- Right: editorial book image -->
+    <div class="hero__visual" aria-hidden="true">
+      <div class="hero__image-frame">
+        <img
+          src="assets/images/hero-books.jpg"
+          alt="Books on a reading table"
+          class="hero__image"
+          loading="eager"
+          fetchpriority="high"
+          width="640"
+          height="480"
+        >
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── DIVIDER ── -->
+<div class="page-rule" aria-hidden="true"></div>
+
+<!-- ── DISCOVER / SEARCH ─────────────────────────────────────────────── -->
+<section class="discover" aria-labelledby="discover-heading">
+  <div class="container">
+    <div class="discover__header">
+      <span class="section-label">Explore Our Collection</span>
+      <h2 id="discover-heading" class="discover__title">
+        Browse books by title, author, language or category.
+      </h2>
+    </div>
+    <div class="discover__search">
+      <app-search-bar></app-search-bar>
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURED BOOKS ─────────────────────────────────────────────────── -->
+<section class="section featured" aria-labelledby="featured-heading">
+  <div class="container">
+
+    <div class="section-header">
+      <div class="section-header__left">
+        <span class="section-label">From the Collection</span>
+        <h2 id="featured-heading" class="section-title">Featured Books</h2>
+      </div>
+      <a routerLink="/books" class="section-header__link" id="view-all-books-link">
+        View all books →
+      </a>
+    </div>
+
+    <div class="books-grid" role="list" aria-label="Featured books">
+      @for (book of featuredBooks(); track book.id) {
+        <div role="listitem">
+          <app-book-card [book]="book"></app-book-card>
+        </div>
+      }
+      @if (featuredBooks().length === 0) {
+        <div class="books-empty">
+          <p>Loading books from the collection…</p>
+        </div>
+      }
+    </div>
+
+    <div class="featured__mobile-cta">
+      <a routerLink="/books" class="btn btn--outline-charcoal" id="mobile-view-all-books">
+        View All Books →
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── ABOUT SNIPPET ──────────────────────────────────────────────────── -->
+<section class="section about-snippet" aria-labelledby="about-heading">
+  <div class="container about-snippet__inner">
+
+    <!-- Image side -->
+    <div class="about-snippet__image-side">
+      <div class="about-snippet__image-frame">
+        <img
+          src="assets/images/about-library.jpg"
+          alt="Library reading area"
+          class="about-snippet__image"
+          loading="lazy"
+          width="560"
+          height="420"
+        >
+      </div>
+    </div>
+
+    <!-- Content side -->
+    <div class="about-snippet__content">
+      <span class="section-label">About the Library</span>
+      <h2 id="about-heading" class="section-title">
+        A place to read,<br>learn and grow.
+      </h2>
+
+      <p class="about-snippet__text">
+        Sri Krishna Lending Library was founded with a simple purpose — to make
+        quality books accessible to every member of our community. We believe
+        reading is one of the most meaningful things a person can do.
+      </p>
+      <p class="about-snippet__text">
+        Our collection spans fiction, non-fiction, spirituality, history,
+        science, children's books and more. Whatever you are looking for,
+        you are likely to find it here.
+      </p>
+
+      <div class="about-snippet__highlights">
+        <div class="highlight-item">
+          <span class="highlight-item__value">4000+</span>
+          <span class="highlight-item__label">Books available</span>
+        </div>
+        <div class="highlight-divider" aria-hidden="true"></div>
+        <div class="highlight-item">
+          <span class="highlight-item__value">Multiple</span>
+          <span class="highlight-item__label">Languages & genres</span>
+        </div>
+        <div class="highlight-divider" aria-hidden="true"></div>
+        <div class="highlight-item">
+          <span class="highlight-item__value">Open</span>
+          <span class="highlight-item__label">To the community</span>
+        </div>
+      </div>
+
+      <a routerLink="/about" class="btn btn--outline-charcoal about-snippet__cta" id="about-read-more">
+        Read about the library →
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── HOW LENDING WORKS ──────────────────────────────────────────────── -->
+<section class="section lending-steps" aria-labelledby="lending-heading">
+  <div class="container">
+    <div class="section-header section-header--center">
+      <span class="section-label">Simple Process</span>
+      <h2 id="lending-heading" class="section-title">How lending works</h2>
+    </div>
+
+    <ol class="steps" role="list">
+      <li class="step">
+        <span class="step__number" aria-hidden="true">01</span>
+        <div class="step__content">
+          <h3 class="step__title">Explore the collection</h3>
+          <p class="step__text">
+            Browse books by title, author, category or language using our online catalogue.
+          </p>
+        </div>
+      </li>
+
+      <li class="step">
+        <span class="step__number" aria-hidden="true">02</span>
+        <div class="step__content">
+          <h3 class="step__title">Choose your book</h3>
+          <p class="step__text">
+            Find a book you want to read and note its details before your visit.
+          </p>
+        </div>
+      </li>
+
+      <li class="step">
+        <span class="step__number" aria-hidden="true">03</span>
+        <div class="step__content">
+          <h3 class="step__title">Visit the library and borrow</h3>
+          <p class="step__text">
+            Come to the library during opening hours and borrow the book at the counter.
+          </p>
+        </div>
+      </li>
+
+      <li class="step">
+        <span class="step__number" aria-hidden="true">04</span>
+        <div class="step__content">
+          <h3 class="step__title">Return it by the due date</h3>
+          <p class="step__text">
+            Return the book in good condition by the agreed return date.
+          </p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ── LIBRARY RULES PREVIEW ──────────────────────────────────────────── -->
+<section class="rules-preview" aria-labelledby="rules-heading">
+  <div class="container rules-preview__inner">
+    <div class="rules-preview__content">
+      <span class="section-label section-label--light">Library Rules</span>
+      <h2 id="rules-heading" class="rules-preview__title">Borrow responsibly.</h2>
+      <ul class="rules-preview__list" role="list">
+        <li>Return books on time and in good condition.</li>
+        <li>Handle books with care — avoid folds, marks or damage.</li>
+        <li>Keep the library a quiet, respectful space for everyone.</li>
+      </ul>
+    </div>
+    <div class="rules-preview__action">
+      <a routerLink="/rules" class="btn btn--outline-warm" id="view-library-rules">
+        View Library Rules →
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── VISIT THE LIBRARY ───────────────────────────────────────────────── -->
+<section class="section visit" aria-labelledby="visit-heading">
+  <div class="container visit__inner">
+    <div class="visit__content">
+      <span class="section-label">Find Us</span>
+      <h2 id="visit-heading" class="section-title">Visit the library</h2>
+      <p class="visit__intro">
+        We are open to all members of the community. Come in, browse, and take
+        home a book today.
+      </p>
+    </div>
+
+    <div class="visit__grid">
+      <div class="visit-info-card">
+        <div class="visit-info-card__icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <div>
+          <h3 class="visit-info-card__label">Address</h3>
+          <p class="visit-info-card__text">[Address to be updated]<br>Your City, State — PIN</p>
+        </div>
+      </div>
+
+      <div class="visit-info-card">
+        <div class="visit-info-card__icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.24h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.06 6.06l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </div>
+        <div>
+          <h3 class="visit-info-card__label">Phone</h3>
+          <a href="tel:+910000000000" class="visit-info-card__link">+91 00000 00000</a>
+        </div>
+      </div>
+
+      <div class="visit-info-card">
+        <div class="visit-info-card__icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </div>
+        <div>
+          <h3 class="visit-info-card__label">Email</h3>
+          <a href="mailto:info@srikrishnalibrary.in" class="visit-info-card__link">info&#64;srikrishnalibrary.in</a>
+        </div>
+      </div>
+
+      <div class="visit-info-card">
+        <div class="visit-info-card__icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div>
+          <h3 class="visit-info-card__label">Opening Hours</h3>
+          <p class="visit-info-card__text">
+            Mon – Sat: 9:00 AM – 8:00 PM<br>
+            Sunday: 10:00 AM – 5:00 PM
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="visit__cta">
+      <a routerLink="/contact" class="btn btn--primary-dark" id="visit-contact-us">Contact Us</a>
+    </div>
+  </div>
+</section>

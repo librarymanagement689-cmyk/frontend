@@ -1,0 +1,316 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+// Editorial navbar — warm ivory, clean border, refined typography
+$nav-bg:     #FEFCF8;
+$nav-border: #E8E3D9;
+$charcoal:   #20201D;
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba($nav-bg, 0.97);
+  border-bottom: 1px solid $nav-border;
+  transition: box-shadow $transition-base, background $transition-base;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  &--scrolled {
+    box-shadow: 0 1px 16px rgba($charcoal, 0.07);
+    background: rgba($nav-bg, 0.99);
+  }
+
+  &__inner {
+    @include flex-between;
+    height: $navbar-height;
+    gap: $space-8;
+  }
+
+  // --- Brand ---
+  &__brand {
+    display: flex;
+    align-items: center;
+    gap: $space-3;
+    flex-shrink: 0;
+    text-decoration: none;
+
+    &:hover {
+      .navbar__logo {
+        transform: scale(1.04);
+      }
+      .navbar__brand-name {
+        color: $color-gold;
+      }
+    }
+  }
+
+  &__logo-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  &__logo {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    border-radius: $radius-md;
+    transition: transform $transition-spring;
+
+    @include max-sm {
+      width: 40px;
+      height: 40px;
+    }
+  }
+
+  &__brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+  }
+
+  &__brand-name {
+    font-family: $font-serif;
+    font-size: $fs-md;
+    font-weight: $fw-bold;
+    color: $charcoal;
+    transition: color $transition-fast;
+    letter-spacing: -0.02em;
+
+    @include max-sm {
+      font-size: $fs-base;
+    }
+  }
+
+  &__brand-sub {
+    font-family: $font-sans;
+    font-size: 0.625rem;
+    font-weight: $fw-semibold;
+    color: $color-gold;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+
+    @include max-sm {
+      font-size: 0.575rem;
+      letter-spacing: 0.1em;
+    }
+  }
+
+  // --- Desktop nav ---
+  &__nav {
+    display: none;
+    align-items: center;
+    gap: $space-6;
+
+    @include lg {
+      display: flex;
+    }
+  }
+
+  &__links {
+    display: flex;
+    align-items: center;
+    gap: $space-1;
+  }
+
+  &__link {
+    font-family: $font-sans;
+    font-size: $fs-sm;
+    font-weight: $fw-medium;
+    color: rgba($charcoal, 0.75);
+    padding: $space-2 $space-3;
+    border-radius: $radius-sm;
+    transition: color $transition-fast;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: $space-3;
+      right: $space-3;
+      height: 1.5px;
+      background: $color-gold;
+      border-radius: $radius-full;
+      transform: scaleX(0);
+      transition: transform $transition-base;
+      transform-origin: left;
+    }
+
+    &:hover {
+      color: $charcoal;
+
+      &::after {
+        transform: scaleX(1);
+      }
+    }
+
+    &--active {
+      color: $charcoal !important;
+      font-weight: $fw-semibold;
+
+      &::after {
+        transform: scaleX(1) !important;
+      }
+    }
+  }
+
+  // CTA button — charcoal on ivory
+  &__cta {
+    flex-shrink: 0;
+    background: $charcoal;
+    color: $color-white;
+    border: 1.5px solid $charcoal;
+    font-family: $font-sans;
+    font-size: $fs-xs;
+    font-weight: $fw-semibold;
+    letter-spacing: 0.04em;
+    padding: $space-2 $space-5;
+    border-radius: $radius-md;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    transition: background $transition-fast, box-shadow $transition-fast;
+
+    &:hover {
+      background: rgba($charcoal, 0.85);
+      box-shadow: 0 2px 12px rgba($charcoal, 0.2);
+    }
+
+    &:focus-visible {
+      outline: 2px solid $color-gold;
+      outline-offset: 3px;
+    }
+  }
+
+  // --- Hamburger ---
+  &__hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 36px;
+    height: 36px;
+    padding: $space-1;
+    cursor: pointer;
+    background: none;
+    border: none;
+    flex-shrink: 0;
+
+    @include lg {
+      display: none;
+    }
+
+    span {
+      display: block;
+      width: 100%;
+      height: 1.5px;
+      background: $charcoal;
+      border-radius: $radius-full;
+      transition: transform $transition-base, opacity $transition-base,
+                  width $transition-base;
+      transform-origin: center;
+    }
+
+    &--open {
+      span:nth-child(1) {
+        transform: translateY(6.5px) rotate(45deg);
+      }
+      span:nth-child(2) {
+        opacity: 0;
+        transform: scaleX(0);
+      }
+      span:nth-child(3) {
+        transform: translateY(-6.5px) rotate(-45deg);
+      }
+    }
+  }
+
+  // --- Mobile drawer ---
+  &__drawer {
+    position: fixed;
+    top: $navbar-height;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: $nav-bg;
+    padding: $space-8 $space-6;
+    transform: translateX(-100%);
+    transition: transform $transition-base;
+    overflow-y: auto;
+    z-index: 999;
+    border-top: 1px solid $nav-border;
+
+    @include lg {
+      display: none;
+    }
+
+    &--open {
+      transform: translateX(0);
+    }
+  }
+
+  &__drawer-links {
+    display: flex;
+    flex-direction: column;
+    gap: $space-1;
+    margin-bottom: $space-8;
+  }
+
+  &__drawer-link {
+    display: block;
+    font-family: $font-sans;
+    font-size: $fs-lg;
+    font-weight: $fw-medium;
+    color: rgba($charcoal, 0.75);
+    padding: $space-4 0;
+    border-bottom: 1px solid $nav-border;
+    transition: color $transition-fast;
+
+    &:hover, &--active {
+      color: $charcoal;
+    }
+
+    &--active {
+      font-weight: $fw-semibold;
+    }
+  }
+
+  &__drawer-cta {
+    width: 100%;
+    justify-content: center;
+    padding: $space-4;
+    font-size: $fs-base;
+    background: $charcoal;
+    color: $color-white;
+    border: 1.5px solid $charcoal;
+    border-radius: $radius-md;
+    font-family: $font-sans;
+    font-weight: $fw-semibold;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    transition: background $transition-fast;
+
+    &:hover {
+      background: rgba($charcoal, 0.85);
+    }
+  }
+
+  // --- Backdrop ---
+  &__backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba($charcoal, 0.25);
+    z-index: 998;
+    backdrop-filter: blur(2px);
+
+    @include lg {
+      display: none;
+    }
+  }
+}

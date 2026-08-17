@@ -1,0 +1,122 @@
+@use '../../../../styles/variables' as *;
+
+.reports-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h2 { color: $color-white; font-size: 1.5rem; }
+    p { color: #94a3b8; font-size: 0.9rem; }
+  }
+
+  .tabs-header {
+    display: flex;
+    gap: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+    .tab-btn {
+      padding: 0.75rem 1.25rem;
+      background: transparent;
+      color: #94a3b8;
+      border: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+
+      &.active {
+        color: $color-gold;
+        border-bottom-color: $color-gold;
+      }
+    }
+  }
+
+  .filter-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: #112236;
+    padding: 1rem 1.25rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    label { color: #cbd5e1; font-weight: 500; }
+    .form-control {
+      background: #0d1b2a;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: $color-white;
+      padding: 0.5rem 0.85rem;
+      border-radius: 6px;
+    }
+  }
+
+  .summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+
+    .summary-card {
+      background: #112236;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+
+      .card-label { color: #94a3b8; font-size: 0.85rem; }
+      .card-value { color: $color-white; font-size: 1.6rem; font-weight: 700; margin-top: 0.25rem; }
+
+      &.highlight {
+        border-color: rgba(212, 175, 55, 0.3);
+        .card-value { color: $color-gold; }
+      }
+    }
+  }
+
+  .table-card {
+    background-color: #112236;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 1.5rem;
+
+    h3 { color: $color-white; font-size: 1.1rem; margin-bottom: 1rem; }
+    .empty-text { color: #94a3b8; }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      text-align: left;
+
+      th {
+        background-color: #0d1b2a;
+        color: $color-gold;
+        padding: 0.85rem 1rem;
+        font-weight: 600;
+      }
+
+      td {
+        padding: 0.85rem 1rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        color: #cbd5e1;
+      }
+    }
+
+    .id-badge, .member-badge {
+      font-family: monospace;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+      background: rgba(212, 175, 55, 0.15);
+      color: $color-gold;
+    }
+
+    .member-badge { background: rgba(255, 255, 255, 0.08); color: $color-white; }
+    .items-list { list-style: none; padding: 0; margin: 0; font-size: 0.84rem; }
+  }
+}

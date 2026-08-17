@@ -1,0 +1,128 @@
+<div class="dashboard-page">
+  <div class="page-header">
+    <div>
+      <h2>Overview & Live Metrics</h2>
+      <p>Real-time system data directly from MongoDB database</p>
+    </div>
+    <button (click)="loadStats()" class="btn btn--outline-gold btn--sm">
+      Refresh Data
+    </button>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="alert alert--error">
+      <strong>Error loading dashboard:</strong> {{ errorMessage() }}
+    </div>
+  }
+
+  @if (isLoading()) {
+    <div class="loading-spinner">
+      <div class="spinner"></div>
+      <span>Fetching live metrics from backend...</span>
+    </div>
+  }
+
+  @if (!isLoading() && stats()) {
+    <div class="stats-grid">
+      <div class="stat-card gold">
+        <div class="stat-icon">📚</div>
+        <div class="stat-content">
+          <span class="stat-label">Total Catalog Books</span>
+          <span class="stat-value">{{ stats()?.total_books }}</span>
+          <span class="stat-sub">{{ stats()?.published_books }} published on public site</span>
+        </div>
+      </div>
+
+      <div class="stat-card green">
+        <div class="stat-icon">✅</div>
+        <div class="stat-content">
+          <span class="stat-label">Available Books</span>
+          <span class="stat-value">{{ stats()?.available_books }}</span>
+          <span class="stat-sub">Ready for borrowing</span>
+        </div>
+      </div>
+
+      <div class="stat-card blue">
+        <div class="stat-icon">📖</div>
+        <div class="stat-content">
+          <span class="stat-label">Borrowed Books</span>
+          <span class="stat-value">{{ stats()?.borrowed_books }}</span>
+          <span class="stat-sub">Currently out with members</span>
+        </div>
+      </div>
+
+      <div class="stat-card purple">
+        <div class="stat-icon">👥</div>
+        <div class="stat-content">
+          <span class="stat-label">Registered Members</span>
+          <span class="stat-value">{{ stats()?.total_members }}</span>
+          <span class="stat-sub">Active library accounts</span>
+        </div>
+      </div>
+
+      <div class="stat-card teal">
+        <div class="stat-icon">📦</div>
+        <div class="stat-content">
+          <span class="stat-label">Active Orders</span>
+          <span class="stat-value">{{ stats()?.active_orders }}</span>
+          <span class="stat-sub">Current ongoing loans</span>
+        </div>
+      </div>
+
+      <div class="stat-card red">
+        <div class="stat-icon">⚠️</div>
+        <div class="stat-content">
+          <span class="stat-label">Overdue Orders</span>
+          <span class="stat-value">{{ stats()?.overdue_orders }}</span>
+          <span class="stat-sub">Past return due date</span>
+        </div>
+      </div>
+
+      <div class="stat-card orange">
+        <div class="stat-icon">⚡</div>
+        <div class="stat-content">
+          <span class="stat-label">Today's Orders</span>
+          <span class="stat-value">{{ stats()?.today_orders_count }}</span>
+          <span class="stat-sub">Orders issued today</span>
+        </div>
+      </div>
+
+      <div class="stat-card emerald">
+        <div class="stat-icon">💰</div>
+        <div class="stat-content">
+          <span class="stat-label">Today's Collection</span>
+          <span class="stat-value">₹{{ stats()?.today_collection | number:'1.2-2' }}</span>
+          <span class="stat-sub">Payments collected today</span>
+        </div>
+      </div>
+
+      <div class="stat-card gold-dark">
+        <div class="stat-icon">💵</div>
+        <div class="stat-content">
+          <span class="stat-label">Monthly Revenue</span>
+          <span class="stat-value">₹{{ stats()?.monthly_collection | number:'1.2-2' }}</span>
+          <span class="stat-sub">Total revenue this month</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick action links -->
+    <div class="quick-actions">
+      <h3>Quick Operations</h3>
+      <div class="actions-grid">
+        <a routerLink="/admin/orders" class="action-btn">
+          <span>➕ Create New Lending Order</span>
+        </a>
+        <a routerLink="/admin/books" class="action-btn">
+          <span>📚 Add / Edit Books Catalog</span>
+        </a>
+        <a routerLink="/admin/members" class="action-btn">
+          <span>👥 Register / Manage Member</span>
+        </a>
+        <a routerLink="/admin/subscriptions" class="action-btn">
+          <span>💳 Subscription Plans</span>
+        </a>
+      </div>
+    </div>
+  }
+</div>

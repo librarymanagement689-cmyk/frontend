@@ -1,0 +1,332 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0;
+  margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border-width: 0;
+}
+
+.books-page {
+  background: $color-cream;
+  min-height: 100vh;
+  padding-top: $navbar-height;
+}
+
+.books-header {
+  background: $color-white;
+  padding: $space-12 0 $space-10;
+  border-bottom: 1px solid $color-gray-border;
+
+  @include lg {
+    padding: $space-16 0 $space-12;
+  }
+}
+
+.books-page__layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $space-8;
+  padding-top: $space-8;
+  padding-bottom: $space-16;
+  align-items: start;
+
+  @include lg {
+    grid-template-columns: 260px 1fr;
+    gap: $space-10;
+    padding-top: $space-10;
+  }
+}
+
+// ── Sidebar ────────────────────────────────────────────────────────────────
+.books-sidebar {
+  background: $color-white;
+  border: 1px solid $color-gray-border;
+  border-radius: $radius-lg;
+  padding: $space-6;
+  display: flex;
+  flex-direction: column;
+  gap: $space-6;
+  position: sticky;
+  top: calc(#{$navbar-height} + #{$space-6});
+
+  @include max-lg {
+    position: static;
+  }
+
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: $space-3;
+
+    & + & {
+      border-top: 1px solid $color-gray-border;
+      padding-top: $space-6;
+    }
+  }
+
+  &__title {
+    font-family: $font-sans;
+    font-size: $fs-xs;
+    font-weight: $fw-semibold;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: $color-text-muted;
+  }
+
+  &__input-wrap {
+    display: flex;
+    align-items: center;
+    gap: $space-2;
+    border: 1px solid $color-gray-border;
+    border-radius: $radius-md;
+    padding: $space-2 $space-3;
+    background: $color-gray-light;
+    transition: border-color $transition-fast;
+
+    &:focus-within {
+      border-color: $color-gold;
+      background: $color-white;
+    }
+
+    svg { color: $color-gray-mid; flex-shrink: 0; }
+  }
+
+  &__input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: $fs-sm;
+    color: $color-text-body;
+    background: transparent;
+
+    &::placeholder { color: $color-gray-mid; }
+  }
+
+  &__radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: $space-2;
+  }
+
+  &__radio {
+    display: flex;
+    align-items: center;
+    gap: $space-2;
+    cursor: pointer;
+    font-size: $fs-sm;
+    color: $color-text-body;
+    padding: $space-1 0;
+    transition: color $transition-fast;
+
+    input[type="radio"] {
+      accent-color: $color-gold;
+      width: 15px;
+      height: 15px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    &:hover { color: $color-navy; }
+  }
+
+  &__radio-available {
+    color: $color-available;
+    font-weight: $fw-medium;
+  }
+
+  &__select {
+    width: 100%;
+    padding: $space-2 $space-3;
+    border: 1px solid $color-gray-border;
+    border-radius: $radius-md;
+    font-family: $font-sans;
+    font-size: $fs-sm;
+    color: $color-text-body;
+    background: $color-gray-light;
+    outline: none;
+    cursor: pointer;
+    transition: border-color $transition-fast;
+
+    &:focus { border-color: $color-gold; }
+  }
+
+  &__clear {
+    width: 100%;
+    justify-content: center;
+    margin-top: $space-2;
+  }
+}
+
+// ── Main content ───────────────────────────────────────────────────────────
+.books-main {
+  display: flex;
+  flex-direction: column;
+  gap: $space-6;
+}
+
+.books-results-bar {
+  @include flex-between;
+  flex-wrap: wrap;
+  gap: $space-3;
+  padding: $space-4 0;
+  border-bottom: 1px solid $color-gray-border;
+}
+
+.books-results-count {
+  font-size: $fs-sm;
+  color: $color-text-muted;
+
+  strong {
+    color: $color-navy;
+    font-weight: $fw-semibold;
+  }
+}
+
+.books-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $space-2;
+}
+
+.books-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-1;
+  background: rgba($color-gold, 0.12);
+  color: $color-navy;
+  border: 1px solid rgba($color-gold, 0.3);
+  border-radius: $radius-full;
+  padding: $space-1 $space-3;
+  font-size: $fs-xs;
+  font-weight: $fw-medium;
+
+  button {
+    @include flex-center;
+    color: $color-text-muted;
+    padding: 2px;
+    border-radius: 50%;
+    transition: color $transition-fast;
+    cursor: pointer;
+    background: none;
+    border: none;
+
+    &:hover { color: $color-navy; }
+  }
+}
+
+// ── Books grid ─────────────────────────────────────────────────────────────
+.books-grid-page {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $space-4;
+
+  @include sm {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include md {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @include xl {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+// ── Catalog grid (mixed: series cards + book cards) ─────────────────────────
+// Series cards are wider so we use 2-col on desktop, 1-col on mobile
+.books-catalog-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $space-4;
+
+  @include sm {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include lg {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include xl {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+// Results meta (series · standalone breakdown)
+.books-results-meta {
+  color: $color-text-muted;
+  font-size: $fs-xs;
+  margin-left: $space-2;
+}
+
+// ── Skeletons ──────────────────────────────────────────────────────────────
+.books-skeleton {
+  background: $color-white;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  border: 1px solid $color-gray-border;
+
+  &__cover {
+    aspect-ratio: 2 / 3;
+    width: 100%;
+  }
+
+  &__body {
+    padding: $space-4;
+    display: flex;
+    flex-direction: column;
+    gap: $space-2;
+  }
+
+  &__line {
+    height: 14px;
+    border-radius: $radius-sm;
+    width: 100%;
+
+    &--short { width: 50%; height: 10px; }
+    &--med   { width: 70%; }
+  }
+}
+
+// ── Load more ──────────────────────────────────────────────────────────────
+.books-load-more {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-3;
+  padding: $space-8 0;
+
+  &__btn {
+    min-width: 200px;
+    justify-content: center;
+  }
+
+  &__info {
+    font-size: $fs-xs;
+    color: $color-text-muted;
+  }
+}
+
+// ── Empty state ────────────────────────────────────────────────────────────
+.books-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: $space-20 $space-8;
+  gap: $space-4;
+  color: rgba($color-navy, 0.3);
+
+  &__title {
+    font-family: $font-serif;
+    font-size: $fs-xl;
+    color: $color-navy;
+  }
+
+  &__text {
+    font-size: $fs-sm;
+    color: $color-text-muted;
+    max-width: 320px;
+  }
+}

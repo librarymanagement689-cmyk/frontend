@@ -1,0 +1,135 @@
+@use 'variables' as *;
+
+// =============================================================================
+// MIXINS — Sri Krishna Lending Library
+// =============================================================================
+
+// --- Responsive Breakpoints ---
+@mixin sm { @media (min-width: #{$bp-sm}) { @content; } }
+@mixin md { @media (min-width: #{$bp-md}) { @content; } }
+@mixin lg { @media (min-width: #{$bp-lg}) { @content; } }
+@mixin xl { @media (min-width: #{$bp-xl}) { @content; } }
+@mixin xxl { @media (min-width: #{$bp-2xl}) { @content; } }
+
+@mixin max-sm { @media (max-width: #{$bp-sm - 1px}) { @content; } }
+@mixin max-md { @media (max-width: #{$bp-md - 1px}) { @content; } }
+@mixin max-lg { @media (max-width: #{$bp-lg - 1px}) { @content; } }
+
+// --- Container ---
+@mixin container {
+  width: 100%;
+  max-width: $container-max;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: $space-6;
+  padding-right: $space-6;
+
+  @include md {
+    padding-left: $space-8;
+    padding-right: $space-8;
+  }
+  @include xl {
+    padding-left: $space-12;
+    padding-right: $space-12;
+  }
+}
+
+// --- Flex utilities ---
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+// --- Typography ---
+@mixin serif-heading($size: $fs-3xl) {
+  font-family: $font-serif;
+  font-size: $size;
+  font-weight: $fw-bold;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+@mixin sans-label {
+  font-family: $font-sans;
+  font-size: $fs-xs;
+  font-weight: $fw-semibold;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+// --- Gold divider ---
+@mixin gold-rule {
+  content: '';
+  display: block;
+  width: 48px;
+  height: 2px;
+  background: $color-gold;
+  border-radius: $radius-full;
+  margin-top: $space-4;
+}
+
+// --- Card base ---
+@mixin card-base {
+  background: $color-white;
+  border: 1px solid $color-gray-border;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  transition: transform $transition-base, box-shadow $transition-base;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $shadow-lg;
+  }
+}
+
+// --- Button base ---
+@mixin btn-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-2;
+  font-family: $font-sans;
+  font-weight: $fw-semibold;
+  font-size: $fs-sm;
+  letter-spacing: 0.02em;
+  border-radius: $radius-md;
+  padding: $space-3 $space-6;
+  border: none;
+  cursor: pointer;
+  transition: background $transition-fast, color $transition-fast,
+              transform $transition-fast, box-shadow $transition-fast;
+  text-decoration: none;
+  white-space: nowrap;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+  &:active {
+    transform: translateY(0);
+  }
+  &:focus-visible {
+    outline: 2px solid $color-gold;
+    outline-offset: 3px;
+  }
+}
+
+// --- Section padding ---
+@mixin section-padding {
+  padding: $space-20 0;
+
+  @include lg {
+    padding: $space-24 0;
+  }
+}
+
+// --- Reduced motion ---
+@mixin reduced-motion {
+  @media (prefers-reduced-motion: reduce) { @content; }
+}

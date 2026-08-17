@@ -1,0 +1,116 @@
+@use '../../../../styles/variables' as *;
+
+.login-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $color-navy;
+  padding: 1.5rem;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  background-color: #112236;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 12px;
+  padding: 2.5rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+
+  .login-header {
+    text-align: center;
+    margin-bottom: 2rem;
+
+    .logo-icon {
+      width: 56px;
+      height: 56px;
+      background: rgba(212, 175, 55, 0.15);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      color: $color-gold;
+    }
+
+    h2 {
+      color: $color-white;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      color: #94a3b8;
+      font-size: 0.875rem;
+    }
+  }
+
+  .alert--error {
+    background-color: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #fca5a5;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      label {
+        color: #cbd5e1;
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        background-color: #0d1b2a;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        color: $color-white;
+        font-size: 0.95rem;
+
+        &:focus {
+          outline: none;
+          border-color: $color-gold;
+          box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+        }
+      }
+    }
+
+    .btn--full {
+      width: 100%;
+      padding: 0.85rem;
+      font-weight: 600;
+      font-size: 1rem;
+      margin-top: 0.5rem;
+    }
+  }
+
+  .login-footer {
+    margin-top: 2rem;
+    text-align: center;
+
+    .back-link {
+      color: $color-gold;
+      font-size: 0.875rem;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}

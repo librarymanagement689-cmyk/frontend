@@ -1,0 +1,120 @@
+@if (!notFound()) {
+<div class="book-details">
+
+  <!-- Breadcrumb -->
+  <nav class="book-details__breadcrumb container" aria-label="Breadcrumb">
+    <ol class="breadcrumb" role="list">
+      <li><a routerLink="/" class="breadcrumb__link">Home</a></li>
+      <li aria-hidden="true" class="breadcrumb__sep">/</li>
+      <li><a routerLink="/books" class="breadcrumb__link">Books</a></li>
+      @if (book()) {
+        <li aria-hidden="true" class="breadcrumb__sep">/</li>
+        <li aria-current="page" class="breadcrumb__current">{{ book()!.title }}</li>
+      }
+    </ol>
+  </nav>
+
+  @if (book(); as b) {
+    <div class="container book-details__inner">
+
+      <!-- Cover -->
+      <div class="book-details__cover-col">
+        <div class="book-details__cover-frame">
+          @if (b.imageUrl && !imgError()) {
+            <img
+              [src]="b.imageUrl"
+              [alt]="b.title + ' book cover'"
+              class="book-details__cover-image"
+              (error)="onImgError()"
+            >
+          } @else {
+            <div class="book-details__cover-placeholder">
+              <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+              </svg>
+              <span>{{ b.title }}</span>
+            </div>
+          }
+        </div>
+
+        <!-- Availability -->
+        <div class="book-details__availability-card"
+          [class.book-details__availability-card--available]="b.available"
+          [class.book-details__availability-card--unavailable]="!b.available"
+        >
+          <span class="dot" aria-hidden="true"></span>
+          <div>
+            <strong>{{ b.available ? 'Available' : 'Currently Unavailable' }}</strong>
+            <span class="book-details__avail-sub">
+              {{ b.available ? 'This book is available for borrowing' : 'This book is currently borrowed' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Details -->
+      <div class="book-details__info">
+        @if (b.category) {
+          <span class="book-details__category eyebrow">{{ b.category }}</span>
+        }
+        <h1 class="book-details__title">{{ b.title }}</h1>
+        @if (b.author) {
+          <p class="book-details__author">by {{ b.author }}</p>
+        }
+
+        <!-- Metadata -->
+        <dl class="book-details__meta">
+          @if (b.language) {
+            <div class="book-details__meta-item">
+              <dt>Language</dt>
+              <dd>{{ b.language }}</dd>
+            </div>
+          }
+          @if (b.category) {
+            <div class="book-details__meta-item">
+              <dt>Category</dt>
+              <dd>{{ b.category }}</dd>
+            </div>
+          }
+        </dl>
+
+        <!-- Divider -->
+        <hr class="book-details__divider">
+
+        @if (b.description) {
+          <div class="book-details__description">
+            <h2 class="book-details__desc-label">About this book</h2>
+            <p>{{ b.description }}</p>
+          </div>
+        }
+
+        <!-- CTA -->
+        <div class="book-details__actions">
+          <button class="btn btn--primary btn--lg" (click)="onEnquire()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            Enquire About This Book
+          </button>
+
+          <a routerLink="/books" class="btn btn--outline">
+            ← Back to Books
+          </a>
+        </div>
+
+        <p class="book-details__enquiry-note">
+          Clicking above will open WhatsApp to enquire about this book.
+        </p>
+      </div>
+
+    </div>
+  }
+</div>
+} @else {
+
+  <div class="container books-empty" style="padding: 80px 24px; text-align:center;">
+    <h1 style="font-family: 'Playfair Display', serif; color:#071B33; font-size:2rem;">Book Not Found</h1>
+    <p style="color:#7A7167; margin: 16px 0 24px;">We couldn't find the book you're looking for.</p>
+    <a routerLink="/books" class="btn btn--primary">Browse All Books</a>
+  </div>
+}

@@ -1,0 +1,375 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+
+.series-card {
+  @include card-base;
+
+  display: flex;
+  flex-direction: column;
+
+  background: $color-white;
+
+  border: 1.5px solid $color-gray-border;
+
+  border-radius: $radius-lg;
+
+  overflow: hidden;
+
+  transition:
+    transform $transition-base,
+    box-shadow $transition-base,
+    border-color $transition-base;
+
+  &:hover {
+    transform: translateY(-4px);
+
+    box-shadow: $shadow-lg;
+
+    border-color: rgba($color-gold, 0.35);
+  }
+}
+
+
+/* ============================================================
+   COVER
+   ============================================================ */
+
+.series-card__cover-wrap {
+
+  position: relative;
+
+  width: 100%;
+
+  aspect-ratio: 3 / 4;
+
+  background:
+    linear-gradient(160deg,
+      $color-cream-dark 0%,
+      darken($color-cream-dark, 6%) 100%);
+
+  overflow: hidden;
+}
+
+
+.series-card__cover {
+
+  width: 100%;
+
+  height: 100%;
+
+  object-fit: cover;
+
+  transition:
+    transform $transition-slow;
+
+  .series-card:hover & {
+    transform: scale(1.03);
+  }
+}
+
+
+/* ============================================================
+   PLACEHOLDER
+   ============================================================ */
+
+.series-card__placeholder {
+
+  width: 100%;
+
+  height: 100%;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  color: rgba($color-navy, 0.25);
+
+  background:
+    linear-gradient(160deg,
+      $color-cream-dark 0%,
+      darken($color-cream-dark, 6%) 100%);
+}
+
+
+/* ============================================================
+   COLLECTION BADGE
+   ============================================================ */
+
+.series-card__badge-wrap {
+
+  position: absolute;
+
+  top: $space-3;
+
+  left: $space-3;
+}
+
+
+.series-badge {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  padding: 5px 10px;
+
+  background: rgba($color-navy, 0.9);
+
+  border: 1px solid rgba($color-white, 0.15);
+
+  border-radius: $radius-full;
+
+  font-family: $font-sans;
+
+  font-size: 10px;
+
+  font-weight: $fw-semibold;
+
+  color: $color-white;
+
+  letter-spacing: 0.06em;
+
+  text-transform: uppercase;
+
+  white-space: nowrap;
+}
+
+
+/* ============================================================
+   INFORMATION
+   ============================================================ */
+
+.series-card__info {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: $space-2;
+
+  padding: $space-5;
+}
+
+
+.series-card__category {
+
+  font-family: $font-sans;
+
+  font-size: $fs-xs;
+
+  font-weight: $fw-semibold;
+
+  color: $color-gold;
+
+  letter-spacing: 0.08em;
+
+  text-transform: uppercase;
+}
+
+
+/* ============================================================
+   TITLE
+   ============================================================ */
+
+.series-card__title {
+
+  margin: 0;
+
+  font-family: $font-serif;
+
+  font-size: $fs-lg;
+
+  font-weight: $fw-bold;
+
+  color: $color-navy;
+
+  line-height: 1.3;
+
+  display: -webkit-box;
+
+  -webkit-line-clamp: 2;
+
+  -webkit-box-orient: vertical;
+
+  overflow: hidden;
+
+  /*
+   * Keep Tamil and multilingual text rendering natural.
+   */
+  font-variant-ligatures: normal;
+
+  unicode-bidi: normal;
+
+  direction: auto;
+}
+
+
+/* ============================================================
+   AUTHOR
+   ============================================================ */
+
+.series-card__author {
+
+  margin: 0;
+
+  font-family: $font-sans;
+
+  font-size: $fs-sm;
+
+  color: $color-text-muted;
+
+  font-style: italic;
+
+  display: -webkit-box;
+
+  -webkit-line-clamp: 1;
+
+  -webkit-box-orient: vertical;
+
+  overflow: hidden;
+
+  unicode-bidi: normal;
+
+  direction: auto;
+}
+
+
+/* ============================================================
+   PART COUNT
+   ============================================================ */
+
+.series-card__parts {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: $space-2;
+
+  width: fit-content;
+
+  margin-top: $space-1;
+
+  padding: 6px 10px;
+
+  border-radius: $radius-full;
+
+  background: rgba($color-navy, 0.06);
+
+  color: $color-navy;
+
+  font-family: $font-sans;
+
+  font-size: $fs-sm;
+
+  line-height: 1;
+}
+
+
+.series-card__parts strong {
+
+  font-weight: $fw-bold;
+}
+
+
+.series-card__parts-icon {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  color: $color-gold;
+}
+
+
+/* ============================================================
+   AVAILABILITY
+   ============================================================ */
+
+.series-card__availability {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: $space-2;
+
+  margin-top: $space-1;
+
+  font-family: $font-sans;
+
+  font-size: $fs-sm;
+
+  font-weight: $fw-semibold;
+
+  color: $color-available;
+}
+
+
+.series-card__availability-dot {
+
+  width: 8px;
+
+  height: 8px;
+
+  flex: 0 0 8px;
+
+  border-radius: 50%;
+
+  background: $color-available;
+
+  box-shadow:
+    0 0 0 3px rgba($color-available,
+      0.12);
+}
+
+
+/* ============================================================
+   CONTACT MESSAGE
+   ============================================================ */
+
+.series-card__contact {
+
+  margin: 0;
+
+  padding-top: $space-2;
+
+  border-top: 1px solid $color-gray-border;
+
+  font-family: $font-sans;
+
+  font-size: $fs-xs;
+
+  line-height: 1.55;
+
+  color: $color-text-muted;
+
+  unicode-bidi: normal;
+
+  direction: auto;
+}
+
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@include md {
+
+  .series-card__cover-wrap {
+    aspect-ratio: 3 / 4;
+  }
+
+  .series-card__info {
+    padding: $space-5;
+  }
+
+  .series-card__title {
+    font-size: $fs-xl;
+  }
+}

@@ -1,0 +1,179 @@
+<!-- ABOUT PAGE — Sri Krishna Lending Library -->
+
+<!-- Page Header -->
+<header class="about-header">
+  <div class="container">
+    <span class="eyebrow">Our Story</span>
+    <h1 class="about-header__title">About Sri Krishna<br>Lending Library</h1>
+    <p class="about-header__subtitle">
+      A community-centred library dedicated to fostering a love of reading,
+      lifelong learning, and access to knowledge for everyone.
+    </p>
+  </div>
+</header>
+
+<!-- Introduction section -->
+<section class="section section--white about-intro" aria-labelledby="about-intro-heading">
+  <div class="container about-intro__inner">
+
+    <div class="about-intro__image-col">
+      <img
+        src="assets/images/about-library.jpg"
+        alt="The welcoming interior of Sri Krishna Lending Library"
+        class="about-intro__image"
+        loading="lazy"
+      >
+    </div>
+
+    <div class="about-intro__content">
+      <app-section-heading
+        id="about-intro-heading"
+        eyebrow="Who We Are"
+        title="A Home for Every Reader"
+      ></app-section-heading>
+
+      <p>
+        Sri Krishna Lending Library was established with a clear and heartfelt mission —
+        to create a space where books are not a luxury, but an accessible resource for
+        every member of our community. We believe that reading transforms lives, broadens
+        perspectives, and builds stronger communities.
+      </p>
+      <p>
+        Our collection spans thousands of titles across fiction, non-fiction, self-help,
+        spirituality, science, history, and children's literature. Whether you are a
+        student seeking knowledge, a professional looking to grow, or someone searching
+        for a quiet escape — our library has something for you.
+      </p>
+      <p>
+        We are proud to serve a growing community of readers who trust us to curate a
+        meaningful, diverse, and high-quality collection. Every book in our library has
+        been carefully selected to add value to our readers' lives.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Mission section -->
+<section class="section section--cream about-mission" aria-labelledby="mission-heading">
+  <div class="container">
+    <app-section-heading
+      id="mission-heading"
+      eyebrow="Our Mission"
+      title="Why We Exist"
+      subtitle="Three core values guide everything we do at Sri Krishna Lending Library."
+      [centered]="true"
+    ></app-section-heading>
+
+    <div class="about-mission__grid">
+
+      <div class="about-mission__card">
+        <div class="about-mission__icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+          </svg>
+        </div>
+        <h3 class="about-mission__card-title">Access to Knowledge</h3>
+        <p class="about-mission__card-text">
+          We believe quality books should be accessible to all. Our affordable lending
+          model ensures that no reader is held back by cost.
+        </p>
+      </div>
+
+      <div class="about-mission__card">
+        <div class="about-mission__icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <h3 class="about-mission__card-title">Building Community</h3>
+        <p class="about-mission__card-text">
+          Our library is more than a collection of books — it is a gathering place for
+          curious minds and a hub for learning and connection.
+        </p>
+      </div>
+
+      <div class="about-mission__card">
+        <div class="about-mission__icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <h3 class="about-mission__card-title">Lifelong Learning</h3>
+        <p class="about-mission__card-text">
+          From children discovering their first stories to adults exploring complex ideas,
+          we champion reading as a lifelong journey.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Stats section -->
+<section class="about-stats-section" aria-labelledby="stats-heading">
+  <div class="container">
+    <h2 id="stats-heading" class="sr-only">Library at a glance</h2>
+    <div class="about-stats-grid">
+      @for (h of highlights; track h.label) {
+        <div class="about-stats-item">
+          <span class="about-stats-item__value">{{ h.value }}</span>
+          <span class="about-stats-item__label">{{ h.label }}</span>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Environment section -->
+<section class="section section--white about-env" aria-labelledby="env-heading">
+  <div class="container about-env__inner">
+    <div class="about-env__content">
+      <app-section-heading
+        id="env-heading"
+        eyebrow="Our Space"
+        title="A Welcoming Reading Environment"
+      ></app-section-heading>
+      <p>
+        We have designed our library to be a calm, comfortable, and welcoming space.
+        Whether you prefer to browse our shelves at your own pace or seek recommendations
+        from our knowledgeable staff, you will always find a warm welcome here.
+      </p>
+      <p>
+        Our shelves are carefully organised by category and author, making it easy to find
+        exactly what you are looking for or to discover something new. We regularly update
+        our collection with new arrivals to keep our selection fresh and relevant.
+      </p>
+      <a routerLink="/books" class="btn btn--primary about-env__cta">
+        Browse Our Collection
+      </a>
+    </div>
+
+    <div class="about-env__image-col">
+      <img
+        src="assets/images/hero-library.jpg"
+        alt="Organised bookshelves in our library"
+        class="about-env__image"
+        loading="lazy"
+      >
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-strip">
+  <div class="container cta-strip__inner">
+    <div class="cta-strip__content">
+      <h2 class="cta-strip__title">Ready to start reading?</h2>
+      <p class="cta-strip__subtitle">Explore our collection or contact us to know more.</p>
+    </div>
+    <div class="cta-strip__actions">
+      <a routerLink="/books" class="btn btn--primary btn--lg">Explore Books</a>
+      <a routerLink="/contact" class="btn btn--secondary btn--lg">Get in Touch</a>
+    </div>
+  </div>
+</section>

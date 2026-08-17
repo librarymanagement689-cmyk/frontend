@@ -1,0 +1,104 @@
+<footer class="footer" role="contentinfo">
+  <div class="footer__main">
+    <div class="container footer__grid">
+
+      <!-- Brand -->
+      <div class="footer__brand-col">
+        <a routerLink="/" class="footer__brand" aria-label="Sri Krishna Lending Library Home">
+          <picture class="footer__logo-wrap">
+            <source srcset="assets/images/logo.webp" type="image/webp">
+            <img
+              src="assets/images/logo.png"
+              alt="Sri Krishna Lending Library Peacock Feather & Book Logo"
+              class="footer__logo"
+              width="60"
+              height="60"
+              loading="lazy"
+            >
+          </picture>
+          <div>
+            <div class="footer__brand-name">SriKrishna</div>
+            <div class="footer__brand-sub">Lending Library</div>
+          </div>
+        </a>
+        <p class="footer__description">
+          A place to read, learn and grow. Serving our community with a diverse collection
+          of books across all genres and languages.
+        </p>
+        <!-- Social icons placeholder -->
+        <div class="footer__social" aria-label="Social media links">
+          <!-- REPLACE: Add actual social media links when available -->
+          <!-- Example:
+          <a href="https://facebook.com/..." target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+            <svg ...>...</svg>
+          </a>
+          -->
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <nav class="footer__col" aria-label="Quick links">
+        <h3 class="footer__col-title">Quick Links</h3>
+        <ul class="footer__links" role="list">
+          @for (link of quickLinks; track link.route) {
+            <li>
+              <a [routerLink]="link.route" class="footer__link">{{ link.label }}</a>
+            </li>
+          }
+        </ul>
+      </nav>
+
+      <!-- Useful Links -->
+      <nav class="footer__col" aria-label="Useful links">
+        <h3 class="footer__col-title">Useful Links</h3>
+        <ul class="footer__links" role="list">
+          @for (link of usefulLinks; track link.label) {
+            <li>
+              <a [routerLink]="link.route" class="footer__link">{{ link.label }}</a>
+            </li>
+          }
+        </ul>
+      </nav>
+
+      <!-- Contact -->
+      <div class="footer__col">
+        <h3 class="footer__col-title">Contact Us</h3>
+        <address class="footer__contact">
+          <!-- REPLACE: Update with actual library address -->
+          <div class="footer__contact-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span>[Address to be updated]<br>Your City, State — PIN</span>
+          </div>
+          <!-- REPLACE: Update with actual phone number -->
+          <div class="footer__contact-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.24h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.06 6.06l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <a href="tel:+910000000000" class="footer__link">+91 00000 00000</a>
+          </div>
+          <!-- REPLACE: Update with actual email -->
+          <div class="footer__contact-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            <a href="mailto:info@srikrishnalibrary.in" class="footer__link">info&#64;srikrishnalibrary.in</a>
+          </div>
+          <!-- REPLACE: Update with actual opening hours -->
+          <div class="footer__contact-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span>Mon – Sat: 9:00 AM – 8:00 PM<br>Sunday: 10:00 AM – 5:00 PM</span>
+          </div>
+        </address>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="footer__bottom">
+    <div class="container footer__bottom-inner">
+      <p class="footer__copyright">
+        &copy; {{ currentYear }} Sri Krishna Lending Library. All rights reserved.
+      </p>
+      <p class="footer__credit">
+        Built with ❤️ for our reading community
+      </p>
+    </div>
+  </div>
+</footer>

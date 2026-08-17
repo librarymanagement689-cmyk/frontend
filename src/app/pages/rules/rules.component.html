@@ -1,0 +1,80 @@
+<!-- LIBRARY RULES PAGE -->
+
+<header class="rules-header">
+  <div class="container">
+    <span class="eyebrow">Know Before You Borrow</span>
+    <h1 class="rules-header__title">Library Rules &amp; Guidelines</h1>
+    <p class="rules-header__subtitle">
+      To ensure a pleasant experience for all our members, please read and follow
+      our library guidelines. These rules help us maintain our collection and serve
+      our community better.
+    </p>
+  </div>
+</header>
+
+<!-- Notice banner -->
+<div class="rules-notice" role="note">
+  <div class="container rules-notice__inner">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/>
+    </svg>
+    <p>
+      Rules marked with <strong>[X]</strong> or <strong>REPLACE</strong> are placeholders
+      and will be updated with actual library policies. Please contact us for current guidelines.
+    </p>
+  </div>
+</div>
+
+<!-- Rules sections -->
+<section class="section section--cream rules-section" aria-label="Library rules">
+  <div class="container rules-grid">
+    @for (section of ruleSections; track section.title) {
+      <div class="rule-card">
+        <div class="rule-card__header">
+          <div class="rule-card__icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path [attr.d]="section.iconPath"/>
+            </svg>
+          </div>
+          <h2 class="rule-card__title">{{ section.title }}</h2>
+        </div>
+
+        <ul class="rule-card__list" role="list">
+          @for (rule of section.rules; track rule) {
+            <li class="rule-card__item">
+              <span class="rule-card__bullet" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 6 9 17l-5-5"/>
+                </svg>
+              </span>
+              {{ rule }}
+            </li>
+          }
+        </ul>
+
+        @if (section.note) {
+          <div class="rule-card__note">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/>
+            </svg>
+            {{ section.note }}
+          </div>
+        }
+      </div>
+    }
+  </div>
+</section>
+
+<!-- Contact for queries -->
+<section class="rules-contact-strip">
+  <div class="container rules-contact-strip__inner">
+    <div>
+      <h2 class="rules-contact-strip__title">Have Questions About Our Rules?</h2>
+      <p class="rules-contact-strip__text">
+        Our staff are happy to clarify any of the above guidelines. Reach out to us
+        via phone, WhatsApp, or visit us in person.
+      </p>
+    </div>
+    <a routerLink="/contact" class="btn btn--primary btn--lg">Contact Us</a>
+  </div>
+</section>

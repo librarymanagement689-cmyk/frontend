@@ -1,0 +1,195 @@
+<div class="books-page">
+
+  <!-- Page header -->
+  <header class="books-header">
+    <div class="container">
+      <app-section-heading
+        eyebrow="Our Collection"
+        title="Our Book Collection"
+        subtitle="Explore our collection and discover your next great read."
+      ></app-section-heading>
+    </div>
+  </header>
+
+  <div class="container books-page__layout">
+
+    <!-- ── Sidebar filters ── -->
+    <aside class="books-sidebar" aria-label="Book filters">
+      <div class="books-sidebar__section">
+        <h2 class="books-sidebar__title">Search</h2>
+        <div class="books-sidebar__input-wrap">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+          </svg>
+          <label for="books-search" class="sr-only">Search books</label>
+          <input
+            id="books-search"
+            type="search"
+            class="books-sidebar__input"
+            [(ngModel)]="searchQuery"
+            (ngModelChange)="onQueryChange()"
+            placeholder="Title, author, series..."
+            autocomplete="off"
+          >
+        </div>
+      </div>
+
+      <div class="books-sidebar__section">
+        <h2 class="books-sidebar__title">Category</h2>
+        <div class="books-sidebar__radio-group" role="radiogroup" aria-label="Filter by category">
+          <label class="books-sidebar__radio">
+            <input type="radio" name="category" value="" [(ngModel)]="selectedCategory" (change)="applyFilters()">
+            <span>All Categories</span>
+          </label>
+          @for (cat of categories(); track cat) {
+            <label class="books-sidebar__radio">
+              <input type="radio" name="category" [value]="cat" [(ngModel)]="selectedCategory" (change)="applyFilters()">
+              <span>{{ cat }}</span>
+            </label>
+          }
+        </div>
+      </div>
+
+      <div class="books-sidebar__section">
+        <h2 class="books-sidebar__title">Language</h2>
+        <label for="books-language" class="sr-only">Filter by language</label>
+        <select
+          id="books-language"
+          class="books-sidebar__select"
+          [(ngModel)]="selectedLanguage"
+          (change)="applyFilters()"
+        >
+          <option value="">All Languages</option>
+          @for (lang of languages(); track lang) {
+            <option [value]="lang">{{ lang }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="books-sidebar__section">
+        <h2 class="books-sidebar__title">Availability</h2>
+        <div class="books-sidebar__radio-group" role="radiogroup" aria-label="Filter by availability">
+          <label class="books-sidebar__radio">
+            <input type="radio" name="availability" value="all" [(ngModel)]="selectedAvailability" (change)="applyFilters()">
+            <span>All Books</span>
+          </label>
+          <label class="books-sidebar__radio">
+            <input type="radio" name="availability" value="available" [(ngModel)]="selectedAvailability" (change)="applyFilters()">
+            <span class="books-sidebar__radio-available">Available Now</span>
+          </label>
+          <label class="books-sidebar__radio">
+            <input type="radio" name="availability" value="unavailable" [(ngModel)]="selectedAvailability" (change)="applyFilters()">
+            <span>Unavailable</span>
+          </label>
+        </div>
+      </div>
+
+      @if (hasActiveFilters) {
+        <button class="books-sidebar__clear btn btn--outline-gold" (click)="clearFilters()">
+          Clear All Filters
+        </button>
+      }
+    </aside>
+
+    <!-- ── Main content ── -->
+    <main class="books-main" id="books-results" aria-label="Search results" aria-live="polite">
+
+      <!-- Results bar -->
+      <div class="books-results-bar">
+        <p class="books-results-count" aria-live="polite" aria-atomic="true">
+          @if (isLoading()) {
+            <span>Searching...</span>
+          } @else {
+            <strong>{{ displayedItems().length }}</strong> item{{ displayedItems().length !== 1 ? 's' : '' }} found
+            @if (seriesCount() > 0 || standaloneCount() > 0) {
+              <span class="books-results-meta">
+                ({{ seriesCount() }} series · {{ standaloneCount() }} standalone)
+              </span>
+            }
+          }
+        </p>
+
+        <!-- Active filter chips -->
+        <div class="books-chips" aria-label="Active filters">
+          @if (selectedCategory) {
+            <span class="books-chip">
+              {{ selectedCategory }}
+              <button (click)="selectedCategory = ''; applyFilters()" aria-label="Remove category filter">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+              </button>
+            </span>
+          }
+          @if (selectedLanguage) {
+            <span class="books-chip">
+              {{ selectedLanguage }}
+              <button (click)="selectedLanguage = ''; applyFilters()" aria-label="Remove language filter">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+              </button>
+            </span>
+          }
+          @if (selectedAvailability !== 'all') {
+            <span class="books-chip">
+              {{ selectedAvailability === 'available' ? 'Available' : 'Unavailable' }}
+              <button (click)="selectedAvailability = 'all'; applyFilters()" aria-label="Remove availability filter">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+              </button>
+            </span>
+          }
+        </div>
+      </div>
+
+      <!-- Error alert -->
+      @if (errorMessage()) {
+        <div style="background: #fee2e2; border: 1px solid #f87171; color: #991b1b; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1.5rem;" role="alert">
+          <strong>Error loading books:</strong> {{ errorMessage() }}
+        </div>
+      }
+
+      <!-- Loading skeleton -->
+      @if (isLoading()) {
+        <div class="books-grid-page" aria-busy="true" aria-label="Loading books">
+          @for (i of [1,2,3,4,5,6,7,8]; track i) {
+            <div class="books-skeleton">
+              <div class="skeleton books-skeleton__cover"></div>
+              <div class="books-skeleton__body">
+                <div class="skeleton books-skeleton__line books-skeleton__line--short"></div>
+                <div class="skeleton books-skeleton__line"></div>
+                <div class="skeleton books-skeleton__line books-skeleton__line--med"></div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Catalog grid: series + standalone books -->
+      @if (!isLoading() && displayedItems().length > 0) {
+        <div class="books-catalog-grid" role="list" aria-label="Books and series list">
+          @for (item of displayedItems(); track trackItem($index, item)) {
+            <div role="listitem">
+              @if (isSeries(item)) {
+                <!-- Series collection card -->
+                <app-series-card [series]="item"></app-series-card>
+              } @else {
+                <!-- Standalone book card -->
+                <app-book-card [book]="toBook(item)"></app-book-card>
+              }
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Empty state -->
+      @if (!isLoading() && displayedItems().length === 0) {
+        <div class="books-empty" role="status">
+          <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+            <path d="m9 9.5 2 2 4-4"/>
+          </svg>
+          <h3 class="books-empty__title">No books found</h3>
+          <p class="books-empty__text">Try adjusting your search or filters to find what you're looking for.</p>
+          <button class="btn btn--primary" (click)="clearFilters()">Clear All Filters</button>
+        </div>
+      }
+    </main>
+  </div>
+</div>

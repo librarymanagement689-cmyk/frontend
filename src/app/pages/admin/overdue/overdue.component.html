@@ -1,0 +1,70 @@
+<div class="overdue-page">
+  <div class="page-header">
+    <div>
+      <h2>Overdue Book Loans</h2>
+      <p>Manage past due loans, calculate overdue duration, and process returns</p>
+    </div>
+    <button (click)="loadOverdueOrders()" class="btn btn--outline-gold btn--sm">
+      🔄 Refresh Overdue List
+    </button>
+  </div>
+
+  <div class="table-card">
+    @if (isLoading()) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <span>Loading overdue records...</span>
+      </div>
+    } @else if (orders().length === 0) {
+      <div class="empty-state">
+        <p>No overdue loans found. All borrowed books are on track.</p>
+      </div>
+    } @else {
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Member ID</th>
+              <th>Borrowed Books</th>
+              <th>Due Date</th>
+              <th>Days Overdue</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (order of orders(); track order.order_id) {
+              <tr>
+                <td><span class="id-badge">{{ order.order_id }}</span></td>
+                <td><span class="member-badge">{{ order.member_id }}</span></td>
+                <td>
+                  <ul class="items-list">
+                    @for (item of order.items; track item.book_id) {
+                      <li>{{ item.title }} ({{ item.book_id }})</li>
+                    }
+                  </ul>
+                </td>
+                <td><strong class="text-red">{{ order.due_date }}</strong></td>
+                <td>
+                  <span class="overdue-badge">
+                    {{ getDaysOverdue(order.due_date) }} day(s) overdue
+                  </span>
+                </td>
+                <td>
+                  <div class="action-row">
+                    <button (click)="sendReminder(order)" class="btn btn--outline-gold btn--sm">
+                      📧 Notify
+                    </button>
+                    <button (click)="processReturn(order)" class="btn btn--primary btn--sm">
+                      ↩️ Process Return
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>

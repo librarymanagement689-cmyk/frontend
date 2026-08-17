@@ -1,0 +1,98 @@
+// =============================================================================
+// DESIGN TOKENS — Sri Krishna Lending Library
+// =============================================================================
+
+// --- Color Palette ---
+$color-navy:        #071B33;
+$color-navy-light:  #0D2B4E;
+$color-navy-mid:    #122F55;
+$color-gold:        #C99632;
+$color-gold-light:  #E2B44A;
+$color-gold-pale:   #F5E6C0;
+$color-cream:       #FBF7EF;
+$color-cream-dark:  #F3EDE0;
+$color-white:       #FFFFFF;
+$color-gray-border: #E5E0D8;
+$color-gray-light:  #F7F4EF;
+$color-gray-mid:    #8A8278;
+$color-text-dark:   #1A1209;
+$color-text-body:   #3D3529;
+$color-text-muted:  #7A7167;
+$color-available:   #2E7D52;
+$color-unavailable: #9E3A3A;
+$color-available-bg:#E8F5EE;
+$color-unavailable-bg: #FAE8E8;
+
+// --- Typography ---
+// IMPORTANT: 'Noto Sans Tamil' MUST be listed before 'Inter' so the browser
+// can fall back to it for Tamil Unicode characters (U+0B80–U+0BFF).
+// 'Inter' does not contain Tamil glyphs; without this ordering Tamil renders as ????.
+$font-serif:  'Playfair Display', 'Mukta Malar', 'Tamil Sangam MN', Georgia, 'Times New Roman', serif;
+$font-sans:   'Noto Sans Tamil', 'Mukta Malar', 'Inter', 'Latha', 'Tamil Sangam MN', 'DM Sans', system-ui, -apple-system, sans-serif;
+
+// --- Font Sizes ---
+$fs-xs:   0.75rem;   // 12px
+$fs-sm:   0.875rem;  // 14px
+$fs-base: 1rem;      // 16px
+$fs-md:   1.125rem;  // 18px
+$fs-lg:   1.25rem;   // 20px
+$fs-xl:   1.5rem;    // 24px
+$fs-2xl:  1.875rem;  // 30px
+$fs-3xl:  2.25rem;   // 36px
+$fs-4xl:  2.75rem;   // 44px
+$fs-5xl:  3.5rem;    // 56px
+$fs-6xl:  4.5rem;    // 72px
+
+// --- Font Weights ---
+$fw-regular:   400;
+$fw-medium:    500;
+$fw-semibold:  600;
+$fw-bold:      700;
+$fw-extrabold: 800;
+
+// --- Spacing ---
+$space-1:   0.25rem;
+$space-2:   0.5rem;
+$space-3:   0.75rem;
+$space-4:   1rem;
+$space-5:   1.25rem;
+$space-6:   1.5rem;
+$space-8:   2rem;
+$space-10:  2.5rem;
+$space-12:  3rem;
+$space-16:  4rem;
+$space-20:  5rem;
+$space-24:  6rem;
+$space-32:  8rem;
+
+// --- Border Radius ---
+$radius-sm:   6px;
+$radius-md:   10px;
+$radius-lg:   16px;
+$radius-xl:   24px;
+$radius-full: 9999px;
+
+// --- Shadows ---
+$shadow-xs:  0 1px 3px rgba($color-navy, 0.06);
+$shadow-sm:  0 2px 8px rgba($color-navy, 0.08);
+$shadow-md:  0 4px 16px rgba($color-navy, 0.10);
+$shadow-lg:  0 8px 32px rgba($color-navy, 0.12);
+$shadow-xl:  0 16px 48px rgba($color-navy, 0.16);
+$shadow-gold: 0 4px 20px rgba($color-gold, 0.20);
+
+// --- Transitions ---
+$transition-fast:   0.15s ease;
+$transition-base:   0.25s ease;
+$transition-slow:   0.4s ease;
+$transition-spring: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+// --- Breakpoints ---
+$bp-sm:   576px;
+$bp-md:   768px;
+$bp-lg:   1024px;
+$bp-xl:   1280px;
+$bp-2xl:  1440px;
+
+// --- Layout ---
+$container-max: 1280px;
+$navbar-height: 80px;
