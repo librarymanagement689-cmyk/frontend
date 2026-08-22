@@ -28,6 +28,7 @@ export interface Book {
 
 export interface BackendBook {
   book_id: string;
+  serial_number: string;
   title: string;
   author: string;
   price: number;
@@ -56,9 +57,36 @@ export interface BookPaginatedResponse {
 export interface Category {
   id: string;
   name: string;
-  icon: string;        // lucide icon name
+  icon?: string;
   count?: number;
+
+  // Backend category fields
+  category_id?: string;
+  book_count?: number;
   description?: string;
+  is_active?: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface CategoryCreate {
+  name: string;
+  description?: string;
+  is_active?: boolean;
+}
+
+export interface CategoryUpdate {
+  name?: string;
+  description?: string;
+  is_active?: boolean;
+}
+
+export interface CategoryPaginatedResponse {
+  total: number;
+  page: number;
+  limit: number;
+  total_pages: number;
+  items: Category[];
 }
 
 export interface BookFilter {
@@ -213,7 +241,8 @@ export interface SubscriptionCreate {
 export interface OrderItem {
   book_id: string;
   title: string;
-  price: number;
+  price: number;              // Actual/master book price
+  lending_amount: number;     // Amount manually entered for lending
   returned: boolean;
   returned_date?: string;
 }
@@ -233,9 +262,14 @@ export interface Order {
   updated_at?: string;
 }
 
+export interface OrderCreateItem {
+  book_id: string;
+  lending_amount: number;
+}
+
 export interface OrderCreate {
   member_id: string;
-  book_ids: string[];
+  items: OrderCreateItem[];
   borrowed_date: string;
   due_date: string;
   amount_paid: number;

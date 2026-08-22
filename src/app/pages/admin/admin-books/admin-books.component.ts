@@ -4,12 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { AdminBookService, BookCreatePayload, BookUpdatePayload, CSVImportSummaryResponse } from '../../../services/admin-book.service';
 import { ErrorService } from '../../../services/error.service';
 import { ToastService } from '../../../services/toast.service';
-import { BackendBook } from '../../../models/book.model';
+import { transliterate } from '@piraisoodan/tanglish';
+import { BackendBook, Category } from '../../../models/book.model';
 import {
   ImageCropperComponent,
   ImageCroppedEvent,
   ImageTransform
 } from 'ngx-image-cropper';
+import { CategoryService } from '../../../services/category.service';
 
 @Component({
   selector: 'app-admin-books',
@@ -21,6 +23,7 @@ import {
 export class AdminBooksComponent implements OnInit {
   private adminBookService = inject(AdminBookService);
   private errorService = inject(ErrorService);
+  private categoryService = inject(CategoryService);
   private toastService = inject(ToastService);
 
   books = signal<BackendBook[]>([]);
@@ -29,8 +32,18 @@ export class AdminBooksComponent implements OnInit {
   currentPage = 1;
   pageSize = 15;
 
+  // Tamil transliteration state
+  // Tamil transliteration state
+  tamilTypingTitle = false;
+  tamilTypingAuthor = false;
+
+
+
+  // Filters & Sort
   // Filters & Sort
   searchQuery = '';
+  selectedSerialNumber = '';
+  selectedAuthor = '';
   selectedCategory = '';
   selectedLanguage = '';
   selectedStatus = '';
@@ -63,6 +76,7 @@ export class AdminBooksComponent implements OnInit {
 
   // Form Model
   bookForm: BookCreatePayload = {
+    serial_number: '',
     title: '',
     author: '',
     price: 0,
@@ -72,7 +86,7 @@ export class AdminBooksComponent implements OnInit {
     image_url: ''
   };
 
-  categories = ['Fiction', 'Non-Fiction', 'Self Help', 'Spirituality', 'Science', 'History', 'Children'];
+  categories = signal<Category[]>([]);
   languages = ['English', 'Tamil', 'Kannada', 'Hindi', 'Sanskrit', 'Telugu'];
 
   // Modal State - Book Details & History
@@ -89,8 +103,143 @@ export class AdminBooksComponent implements OnInit {
   potentialDuplicates = signal<Array<{ csvRow: any; existingBook: any }>>([]);
 
   ngOnInit(): void {
+    this.loadCategories();
     this.loadBooks();
   }
+
+  loadCategories(): void {
+    this.categoryService.getCategories(true).subscribe({
+      next: (res) => {
+        this.categories.set(res.items);
+      },
+      error: (err) => {
+        this.toastService.error(
+          this.errorService.getErrorMessage(err)
+        );
+      }
+    });
+  }
+
+
+  /* toggle tamil */
+
+  onTamilKeydown(
+    event: KeyboardEvent,
+    field: 'title' | 'author'
+  ): void {
+    if (this.bookForm.language !== 'Tamil') {
+      return;
+    }
+
+    if (!this.isTamilTypingEnabled(field)) {
+      return;
+    }
+
+    // Transliterate only when SPACE is pressed
+    if (event.key !== ' ') {
+      return;
+    }
+
+    const input = event.target as HTMLInputElement;
+
+    const cursorPosition = input.selectionStart ?? 0;
+    const selectionEnd = input.selectionEnd ?? cursorPosition;
+
+    // Don't interfere when text is selected
+    if (cursorPosition !== selectionEnd) {
+      return;
+    }
+
+    const currentValue =
+      field === 'title'
+        ? this.bookForm.title
+        : this.bookForm.author;
+
+    const textBeforeCursor =
+      currentValue.substring(0, cursorPosition);
+
+    const lastSpace =
+      textBeforeCursor.lastIndexOf(' ');
+
+    const wordStart = lastSpace + 1;
+
+    const currentWord =
+      textBeforeCursor.substring(wordStart);
+
+    // Nothing to convert
+    if (!currentWord.trim()) {
+      return;
+    }
+
+    // Only process English/Tanglish words
+    if (!/[a-zA-Z]/.test(currentWord)) {
+      return;
+    }
+
+    const tamilWord = transliterate(currentWord);
+
+    // If no conversion happened, allow normal space
+    if (!tamilWord || tamilWord === currentWord) {
+      return;
+    }
+
+    event.preventDefault();
+
+    const beforeWord =
+      currentValue.substring(0, wordStart);
+
+    const afterCursor =
+      currentValue.substring(cursorPosition);
+
+    const finalValue =
+      beforeWord +
+      tamilWord +
+      ' ' +
+      afterCursor;
+
+    if (field === 'title') {
+      this.bookForm.title = finalValue;
+    } else {
+      this.bookForm.author = finalValue;
+    }
+
+    requestAnimationFrame(() => {
+      const newCursorPosition =
+        beforeWord.length +
+        tamilWord.length +
+        1;
+
+      input.focus();
+
+      input.setSelectionRange(
+        newCursorPosition,
+        newCursorPosition
+      );
+    });
+  }
+
+  /* Tamil transliteration */
+
+  toggleTamilTyping(field: 'title' | 'author'): void {
+    if (this.bookForm.language !== 'Tamil') {
+      return;
+    }
+
+    if (field === 'title') {
+      this.tamilTypingTitle = !this.tamilTypingTitle;
+    } else {
+      this.tamilTypingAuthor = !this.tamilTypingAuthor;
+    }
+  }
+
+  isTamilTypingEnabled(field: 'title' | 'author'): boolean {
+    return field === 'title'
+      ? this.tamilTypingTitle
+      : this.tamilTypingAuthor;
+  }
+
+
+
 
   loadBooks(page = 1): void {
     this.currentPage = page;
@@ -105,7 +254,9 @@ export class AdminBooksComponent implements OnInit {
       this.selectedStatus,
       publishBool,
       this.currentPage,
-      this.pageSize
+      this.pageSize,
+      this.selectedSerialNumber,
+      this.selectedAuthor
     ).subscribe({
       next: (res) => {
         this.books.set(res.items);
@@ -127,11 +278,14 @@ export class AdminBooksComponent implements OnInit {
   openAddModal(): void {
     this.isEditing.set(false);
     this.editingBookId.set(null);
+    this.tamilTypingTitle = false;
+    this.tamilTypingAuthor = false;
     this.bookForm = {
+      serial_number: '',
       title: '',
       author: '',
       price: 150,
-      category: 'Fiction',
+      category: this.categories()[0]?.name || '',
       language: 'English',
       publish_on_website: true,
       image_url: ''
@@ -142,15 +296,19 @@ export class AdminBooksComponent implements OnInit {
   openEditModal(book: BackendBook): void {
     this.isEditing.set(true);
     this.editingBookId.set(book.book_id);
+    this.tamilTypingTitle = false;
+    this.tamilTypingAuthor = false;
     this.bookForm = {
+      serial_number: book.serial_number,
       title: book.title,
       author: book.author,
       price: book.price,
       category: book.category,
-      language: book.language,
+      language: book.language === 'தமிழ்' ? 'Tamil' : book.language,
       publish_on_website: book.publish_on_website,
       image_url: book.image_url || ''
     };
+
     this.isModalOpen.set(true);
   }
 
@@ -484,7 +642,12 @@ export class AdminBooksComponent implements OnInit {
   }
 
   saveBook(): void {
-    if (!this.bookForm.title || !this.bookForm.author || this.bookForm.price < 0) {
+    if (
+      !this.bookForm.serial_number?.trim() ||
+      !this.bookForm.title?.trim() ||
+      !this.bookForm.author?.trim() ||
+      this.bookForm.price < 0
+    ) {
       this.toastService.error('Please enter valid Title, Author, and Price.');
       return;
     }
@@ -493,6 +656,7 @@ export class AdminBooksComponent implements OnInit {
 
     if (this.isEditing() && this.editingBookId()) {
       const payload: BookUpdatePayload = {
+        serial_number: this.bookForm.serial_number,
         title: this.bookForm.title,
         author: this.bookForm.author,
         price: this.bookForm.price,

@@ -23,12 +23,12 @@ export class AdminOrdersComponent implements OnInit {
   orders = signal<Order[]>([]);
   members = signal<Member[]>([]);
   availableBooks = signal<BackendBook[]>([]);
-
+  bookSearchQuery = '';
   totalCount = signal(0);
   totalPages = signal(1);
   currentPage = 1;
   pageSize = 15;
-
+  lendingAmounts: Record<string, number | null> = {};
   searchQuery = '';
   selectedStatus = '';
 
@@ -80,6 +80,20 @@ export class AdminOrdersComponent implements OnInit {
     });
   }
 
+  get filteredAvailableBooks(): BackendBook[] {
+    const query = this.bookSearchQuery.trim().toLowerCase();
+
+    if (!query) {
+      return this.availableBooks();
+    }
+
+    return this.availableBooks().filter(book =>
+      book.title?.toLowerCase().includes(query) ||
+      book.author?.toLowerCase().includes(query) ||
+      book.book_id?.toLowerCase().includes(query)
+    );
+  }
+
   loadMembersAndBooks(): void {
     this.memberService.getMembers(undefined, 'active', undefined, 1, 100).subscribe({
       next: (res) => this.members.set(res.items)
@@ -100,9 +114,11 @@ export class AdminOrdersComponent implements OnInit {
     this.selectedMemberId = this.members()[0]?.member_id || '';
     this.selectedBookIdToAdd = '';
     this.selectedBooks = [];
+    this.lendingAmounts = {};
     this.borrowedDate = new Date().toISOString().split('T')[0];
     this.dueDate = new Date(Date.now() + 14 * 86400000).toISOString().split('T')[0];
     this.amountPaid = 0;
+    this.bookSearchQuery = '';
     this.isCreateModalOpen.set(true);
   }
 
@@ -123,7 +139,7 @@ export class AdminOrdersComponent implements OnInit {
     const foundBook = this.availableBooks().find(b => b.book_id === this.selectedBookIdToAdd);
     if (foundBook) {
       this.selectedBooks.push(foundBook);
-      this.recalculateSubtotal();
+      this.lendingAmounts[foundBook.book_id] = null;
       this.selectedBookIdToAdd = '';
       this.errorMessage.set(null);
     } else {
@@ -131,7 +147,8 @@ export class AdminOrdersComponent implements OnInit {
       this.bookService.getBookById(this.selectedBookIdToAdd).subscribe({
         next: (b) => {
           this.selectedBooks.push(b);
-          this.recalculateSubtotal();
+          this.lendingAmounts[b.book_id] = null;
+
           this.selectedBookIdToAdd = '';
           this.errorMessage.set(null);
         },
@@ -141,20 +158,24 @@ export class AdminOrdersComponent implements OnInit {
   }
 
   removeBookFromOrder(bookId: string): void {
-    this.selectedBooks = this.selectedBooks.filter(b => b.book_id !== bookId);
-    this.recalculateSubtotal();
+    this.selectedBooks = this.selectedBooks.filter(
+      b => b.book_id !== bookId
+    );
+
+    delete this.lendingAmounts[bookId];
   }
 
   /**
    * Authoritative price subtotal calculation based exclusively on backend prices.
    */
   get calculatedSubtotal(): number {
-    return this.selectedBooks.reduce((sum, b) => sum + (b.price || 0), 0);
+    return this.selectedBooks.reduce(
+      (sum, b) => sum + (Number(this.lendingAmounts[b.book_id]) || 0),
+      0
+    );
   }
 
-  recalculateSubtotal(): void {
-    this.amountPaid = this.calculatedSubtotal;
-  }
+
 
   submitCreateOrder(): void {
     if (!this.selectedMemberId) {
@@ -167,9 +188,26 @@ export class AdminOrdersComponent implements OnInit {
       return;
     }
 
+    const missingLendingAmount = this.selectedBooks.some(
+      b =>
+        this.lendingAmounts[b.book_id] === null ||
+        this.lendingAmounts[b.book_id] === undefined ||
+        Number(this.lendingAmounts[b.book_id]) < 0
+    );
+
+    if (missingLendingAmount) {
+      this.errorMessage.set(
+        'Please enter the lending amount for every selected book.'
+      );
+      return;
+    }
+
     const payload: OrderCreate = {
       member_id: this.selectedMemberId,
-      book_ids: this.selectedBooks.map(b => b.book_id),
+      items: this.selectedBooks.map(b => ({
+        book_id: b.book_id,
+        lending_amount: Number(this.lendingAmounts[b.book_id] || 0)
+      })),
       borrowed_date: this.borrowedDate,
       due_date: this.dueDate,
       amount_paid: Number(this.amountPaid)

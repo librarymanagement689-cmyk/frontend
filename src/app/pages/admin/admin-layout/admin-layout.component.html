@@ -5,9 +5,10 @@
   <!-- Sidebar -->
   <aside class="admin-sidebar" [class.open]="isMobileMenuOpen()">
     <div class="brand">
-      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
-        <path d="m9 9.5 2 2 4-4"/>
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
+        <path d="m9 9.5 2 2 4-4" />
       </svg>
       <span>SKL Admin</span>
       <button class="mobile-close-btn" (click)="closeMobileMenu()">&times;</button>
@@ -15,49 +16,104 @@
 
     <nav class="nav-menu">
       <a routerLink="/admin/dashboard" routerLinkActive="active" (click)="closeMobileMenu()" class="nav-item">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
+          <rect width="7" height="9" x="3" y="3" rx="1" />
+          <rect width="7" height="5" x="14" y="3" rx="1" />
+          <rect width="7" height="9" x="14" y="12" rx="1" />
+          <rect width="7" height="5" x="3" y="16" rx="1" />
+        </svg>
         <span>Dashboard</span>
       </a>
 
       <a routerLink="/admin/books" routerLinkActive="active" (click)="closeMobileMenu()" class="nav-item">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
+          <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
+        </svg>
         <span>Books</span>
       </a>
 
       <a routerLink="/admin/members" routerLinkActive="active" (click)="closeMobileMenu()" class="nav-item">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
         <span>Members</span>
       </a>
 
       <a routerLink="/admin/orders" routerLinkActive="active" (click)="closeMobileMenu()" class="nav-item">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
+          <path d="m7.5 4.27 9 5.15" />
+          <path
+            d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+          <path d="m3.3 7 8.7 5 8.7-5" />
+          <path d="M12 22V12" />
+        </svg>
         <span>Lending / Orders</span>
       </a>
 
       <a routerLink="/admin/subscriptions" routerLinkActive="active" (click)="closeMobileMenu()" class="nav-item">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
+          <rect width="20" height="14" x="2" y="5" rx="2" />
+          <line x1="2" x2="22" y1="10" y2="10" />
+        </svg>
         <span>Subscriptions</span>
       </a>
 
       <a routerLink="/admin/due-soon" routerLinkActive="active" (click)="closeMobileMenu()" class="nav-item">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10" />
+          <polyline points="12 6 12 12 16 14" />
+        </svg>
         <span>Due Soon</span>
       </a>
 
       <a routerLink="/admin/overdue" routerLinkActive="active" (click)="closeMobileMenu()" class="nav-item">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
+          <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+          <line x1="12" x2="12" y1="9" y2="13" />
+          <line x1="12" x2="12.01" y1="17" y2="17" />
+        </svg>
         <span>Overdue</span>
       </a>
+      <a routerLink="/admin/categories" routerLinkActive="active" (click)="closeMobileMenu()" class="nav-item">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
+          <path d="M8 7h8" />
+          <path d="M8 11h8" />
+          <path d="M8 15h5" />
+        </svg>
 
+        <span>Categories</span>
+      </a>
       <a routerLink="/admin/reports" routerLinkActive="active" (click)="closeMobileMenu()" class="nav-item">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
+          <line x1="18" x2="18" y1="20" y2="10" />
+          <line x1="12" x2="12" y1="20" y2="4" />
+          <line x1="6" x2="6" y1="20" y2="14" />
+        </svg>
         <span>Reports</span>
       </a>
     </nav>
 
     <div class="sidebar-footer">
       <a routerLink="/" class="nav-item public-site-link">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+          <polyline points="15 3 21 3 21 9" />
+          <line x1="10" x2="21" y1="14" y2="3" />
+        </svg>
         <span>View Public Site</span>
       </a>
     </div>
@@ -65,84 +121,89 @@
 
   <!-- Mobile Drawer Backdrop -->
   @if (isMobileMenuOpen()) {
-    <div class="mobile-backdrop" (click)="closeMobileMenu()"></div>
+  <div class="mobile-backdrop" (click)="closeMobileMenu()"></div>
   }
 
   <!-- Main Content Wrap -->
   <div class="admin-main-wrap">
     <header class="admin-topbar">
       <button class="hamburger-btn" (click)="toggleMobileMenu()" aria-label="Toggle navigation menu">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" x2="21" y1="6" y2="6"/><line x1="3" x2="21" y1="12" y2="12"/><line x1="3" x2="21" y1="18" y2="18"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2">
+          <line x1="3" x2="21" y1="6" y2="6" />
+          <line x1="3" x2="21" y1="12" y2="12" />
+          <line x1="3" x2="21" y1="18" y2="18" />
+        </svg>
       </button>
 
       <!-- Global Admin Search -->
       <div class="global-search-container">
         <div class="search-input-wrap">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-          <input
-            type="text"
-            [(ngModel)]="searchQuery"
-            (keyup)="onGlobalSearch()"
-            placeholder="Global Search (Books, Members, Orders)..."
-            class="topbar-search-input"
-          />
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+          <input type="text" [(ngModel)]="searchQuery" (keyup)="onGlobalSearch()"
+            placeholder="Global Search (Books, Members, Orders)..." class="topbar-search-input" />
           @if (searchQuery) {
-            <button (click)="clearSearch()" class="clear-search-btn">&times;</button>
+          <button (click)="clearSearch()" class="clear-search-btn">&times;</button>
           }
         </div>
 
         <!-- Global Search Results Dropdown -->
         @if (showSearchResults() && searchResults()) {
-          <div class="search-results-dropdown">
-            @if (isSearching()) {
-              <div class="search-loading">Searching...</div>
-            } @else {
-              <!-- Books Section -->
-              @if (searchResults()?.books?.length) {
-                <div class="result-section">
-                  <div class="section-title">📚 Books</div>
-                  @for (b of searchResults()?.books; track b.book_id) {
-                    <a routerLink="/admin/books" (click)="clearSearch()" class="result-item">
-                      <span><strong>{{ b.title }}</strong> ({{ b.book_id }})</span>
-                      <span class="badge" [ngClass]="b.status === 'available' ? 'badge--available' : 'badge--unavailable'">
-                        {{ b.status }}
-                      </span>
-                    </a>
-                  }
-                </div>
-              }
-
-              <!-- Members Section -->
-              @if (searchResults()?.members?.length) {
-                <div class="result-section">
-                  <div class="section-title">👥 Members</div>
-                  @for (m of searchResults()?.members; track m.member_id) {
-                    <a routerLink="/admin/members" (click)="clearSearch()" class="result-item">
-                      <span><strong>{{ m.name }}</strong> ({{ m.member_id }}) — {{ m.phone }}</span>
-                      <span class="badge badge--available">{{ m.status }}</span>
-                    </a>
-                  }
-                </div>
-              }
-
-              <!-- Orders Section -->
-              @if (searchResults()?.orders?.length) {
-                <div class="result-section">
-                  <div class="section-title">📦 Lending Orders</div>
-                  @for (o of searchResults()?.orders; track o.order_id) {
-                    <a routerLink="/admin/orders" (click)="clearSearch()" class="result-item">
-                      <span><strong>{{ o.order_id }}</strong> (Member: {{ o.member_id }})</span>
-                      <span class="badge badge--active">₹{{ o.subtotal }}</span>
-                    </a>
-                  }
-                </div>
-              }
-
-              @if (!searchResults()?.books?.length && !searchResults()?.members?.length && !searchResults()?.orders?.length) {
-                <div class="no-results">No records found matching "{{ searchQuery }}"</div>
-              }
+        <div class="search-results-dropdown">
+          @if (isSearching()) {
+          <div class="search-loading">Searching...</div>
+          } @else {
+          <!-- Books Section -->
+          @if (searchResults()?.books?.length) {
+          <div class="result-section">
+            <div class="section-title">📚 Books</div>
+            @for (b of searchResults()?.books; track b.book_id) {
+            <a routerLink="/admin/books" (click)="clearSearch()" class="result-item">
+              <span><strong>{{ b.title }}</strong> ({{ b.book_id }})</span>
+              <span class="badge" [ngClass]="b.status === 'available' ? 'badge--available' : 'badge--unavailable'">
+                {{ b.status }}
+              </span>
+            </a>
             }
           </div>
+          }
+
+          <!-- Members Section -->
+          @if (searchResults()?.members?.length) {
+          <div class="result-section">
+            <div class="section-title">👥 Members</div>
+            @for (m of searchResults()?.members; track m.member_id) {
+            <a routerLink="/admin/members" (click)="clearSearch()" class="result-item">
+              <span><strong>{{ m.name }}</strong> ({{ m.member_id }}) — {{ m.phone }}</span>
+              <span class="badge badge--available">{{ m.status }}</span>
+            </a>
+            }
+          </div>
+          }
+
+          <!-- Orders Section -->
+          @if (searchResults()?.orders?.length) {
+          <div class="result-section">
+            <div class="section-title">📦 Lending Orders</div>
+            @for (o of searchResults()?.orders; track o.order_id) {
+            <a routerLink="/admin/orders" (click)="clearSearch()" class="result-item">
+              <span><strong>{{ o.order_id }}</strong> (Member: {{ o.member_id }})</span>
+              <span class="badge badge--active">₹{{ o.subtotal }}</span>
+            </a>
+            }
+          </div>
+          }
+
+          @if (!searchResults()?.books?.length && !searchResults()?.members?.length && !searchResults()?.orders?.length)
+          {
+          <div class="no-results">No records found matching "{{ searchQuery }}"</div>
+          }
+          }
+        </div>
         }
       </div>
 

@@ -23,10 +23,19 @@
     </div>
 
     <div class="filter-group">
+
+      <input type="text" [(ngModel)]="selectedAuthor" (keyup.enter)="onSearch()" placeholder="Author name..."
+        class="form-control" />
+
+      <input type="text" [(ngModel)]="selectedSerialNumber" (keyup.enter)="onSearch()" placeholder="Serial No..."
+        class="form-control" />
+
       <select [(ngModel)]="selectedCategory" (change)="onSearch()" class="form-control">
         <option value="">All Categories</option>
-        @for (cat of categories; track cat) {
-        <option [value]="cat">{{ cat }}</option>
+        @for (cat of categories(); track cat.category_id || cat.id) {
+        <option [value]="cat.name">
+          {{ cat.name }}
+        </option>
         }
       </select>
 
@@ -48,6 +57,7 @@
         <option value="true">Published</option>
         <option value="false">Hidden</option>
       </select>
+
     </div>
   </div>
 
@@ -68,6 +78,8 @@
       <table class="data-table">
         <thead>
           <tr>
+            <th>Serial No.</th>
+
             <th>Book ID</th>
             <th>Cover</th>
             <th>Title</th>
@@ -83,6 +95,7 @@
         <tbody>
           @for (book of books(); track book.book_id) {
           <tr>
+            <td><span class="id-badge">{{ book.serial_number }}</span></td>
             <td><span class="id-badge">{{ book.book_id }}</span></td>
             <td>
               <div class="cover-thumb">
@@ -140,7 +153,12 @@
             }
           </div>
           <div class="mobile-card-info">
-            <span class="id-badge">{{ book.book_id }}</span>
+            <span class="id-badge">
+              Serial: {{ book.serial_number }}
+            </span>
+            <span class="id-badge">
+              {{ book.book_id }}
+            </span>
             <h4 (click)="openDetailsModal(book.book_id)">{{ book.title }}</h4>
             <p>by {{ book.author }}</p>
             <div class="mobile-meta">
@@ -204,17 +222,43 @@
           </div>
 
           <div class="form-group">
-            <label>Title *</label>
-            <input type="text" [(ngModel)]="bookForm.title" name="title" required class="form-control"
-              placeholder="Book Title" />
+            <label>Library Serial Number *</label>
+            <input type="number" [(ngModel)]="bookForm.serial_number" name="serial_number" required min="1"
+              class="form-control" placeholder="e.g. 1" />
           </div>
+        </div>
+
+        <div class="form-group">
+          <div class="field-label-row">
+            <label>Title *</label>
+
+            @if (bookForm.language === 'Tamil') {
+            <button type="button" class="tamil-toggle" [class.active]="tamilTypingTitle"
+              (click)="toggleTamilTyping('title')">
+              {{ tamilTypingTitle ? 'தமிழ் Typing ON' : 'தமிழ் Typing' }}
+            </button>
+            }
+          </div>
+
+          <input type="text" [(ngModel)]="bookForm.title" name="title" required class="form-control"
+            placeholder="Book Title" (keydown)="onTamilKeydown($event, 'title')" />
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label>Author *</label>
+            <div class="field-label-row">
+              <label>Author *</label>
+
+              @if (bookForm.language === 'Tamil') {
+              <button type="button" class="tamil-toggle" [class.active]="tamilTypingAuthor"
+                (click)="toggleTamilTyping('author')">
+                {{ tamilTypingAuthor ? 'தமிழ் Typing ON' : 'தமிழ் Typing' }}
+              </button>
+              }
+            </div>
+
             <input type="text" [(ngModel)]="bookForm.author" name="author" required class="form-control"
-              placeholder="Author Name" />
+              placeholder="Author Name" (keydown)="onTamilKeydown($event, 'author')" />
           </div>
 
           <div class="form-group">
@@ -228,8 +272,10 @@
           <div class="form-group">
             <label>Category *</label>
             <select [(ngModel)]="bookForm.category" name="category" required class="form-control">
-              @for (cat of categories; track cat) {
-              <option [value]="cat">{{ cat }}</option>
+              @for (cat of categories(); track cat.category_id || cat.id) {
+              <option [value]="cat.name">
+                {{ cat.name }}
+              </option>
               }
             </select>
           </div>
@@ -530,7 +576,10 @@
       <div class="modal-body">
         <!-- Step 1: Upload CSV -->
         @if (csvStep() === 1) {
-        <p>Upload a UTF-8 CSV file with required headers: <code>title,author,price,category,language</code>.</p>
+        <p>
+          Upload a UTF-8 CSV file with required headers:
+          <code>serial_number,title,author,price,category,language</code>.
+        </p>
         <div class="csv-upload-box">
           <input type="file" (change)="onCSVFileChange($event)" accept=".csv" class="form-control" />
           <button (click)="analyzeCSV()" [disabled]="!selectedCSVFile || isAnalyzingCSV()" class="btn btn--primary">

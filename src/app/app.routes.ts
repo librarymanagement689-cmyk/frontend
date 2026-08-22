@@ -20,6 +20,7 @@ export const routes: Routes = [
       keywords: 'about Sri Krishna Lending Library, library mission, book community, library history'
     }
   },
+
   {
     path: 'books',
     loadComponent: () => import('./pages/books/books.component').then(m => m.BooksComponent),
@@ -82,6 +83,13 @@ export const routes: Routes = [
         path: 'books',
         loadComponent: () => import('./pages/admin/admin-books/admin-books.component').then(m => m.AdminBooksComponent),
         title: 'Admin Book Management | Sri Krishna Lending Library'
+      },
+      {
+        path: 'categories',
+        loadComponent: () =>
+          import('./pages/admin/admin-categories/admin-categories.component')
+            .then(m => m.AdminCategoriesComponent),
+        title: 'Admin Categories | Sri Krishna Lending Library'
       },
       {
         path: 'members',

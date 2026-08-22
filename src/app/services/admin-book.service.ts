@@ -5,6 +5,7 @@ import { BackendBook, BookPaginatedResponse } from '../models/book.model';
 import { environment } from '../../environments/environment';
 
 export interface BookCreatePayload {
+  serial_number: string;
   title: string;
   author: string;
   price: number;
@@ -15,6 +16,7 @@ export interface BookCreatePayload {
 }
 
 export interface BookUpdatePayload {
+  serial_number?: string;
   title?: string;
   author?: string;
   price?: number;
@@ -45,13 +47,24 @@ export class AdminBookService {
     status?: string,
     publish_on_website?: boolean,
     page = 1,
-    limit = 20
+    limit = 20,
+    serial_number?: string,
+    author?: string
   ): Observable<BookPaginatedResponse> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('limit', limit.toString());
 
     if (search && search.trim()) params = params.set('search', search.trim());
+
+    if (serial_number && serial_number.trim()) {
+      params = params.set('serial_number', serial_number.trim());
+    }
+
+    if (author && author.trim()) {
+      params = params.set('author', author.trim());
+    }
+
     if (category) params = params.set('category', category);
     if (language) params = params.set('language', language);
     if (status) params = params.set('status', status);

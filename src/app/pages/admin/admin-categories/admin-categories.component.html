@@ -1,0 +1,345 @@
+<section class="categories-page">
+
+    <!-- Header -->
+    <header class="page-header">
+
+        <div>
+            <span class="eyebrow">Library Management</span>
+
+            <h1>Categories</h1>
+
+            <p>
+                Manage the genres and categories used across the library.
+            </p>
+        </div>
+
+        <button type="button" class="btn-primary" (click)="openAddModal()">
+
+            <span class="btn-icon">+</span>
+
+            Add Category
+        </button>
+
+    </header>
+
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+
+        <div class="search-box">
+
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+                <circle cx="11" cy="11" r="7" />
+                <path d="m20 20-3.5-3.5" />
+
+            </svg>
+
+            <input type="text" [(ngModel)]="searchQuery" (keyup.enter)="onSearch()" placeholder="Search categories...">
+
+            @if (searchQuery) {
+
+            <button type="button" class="clear-search" (click)="searchQuery = ''; onSearch()">
+
+                ×
+
+            </button>
+
+            }
+
+        </div>
+
+
+        <button type="button" class="btn-secondary" [class.active]="showInactive" (click)="toggleInactive()">
+
+            {{ showInactive ? 'Hide Inactive' : 'Show Inactive' }}
+
+        </button>
+
+    </div>
+
+
+    <!-- Loading -->
+    @if (isLoading()) {
+
+    <div class="loading-state">
+
+        <div class="spinner"></div>
+
+        <p>Loading categories...</p>
+
+    </div>
+
+    }
+
+
+    <!-- Empty -->
+    @else if (categories().length === 0) {
+
+    <div class="empty-state">
+
+        <div class="empty-icon">
+            📚
+        </div>
+
+        <h3>No categories found</h3>
+
+        <p>
+            Create your first category to organize the library.
+        </p>
+
+        <button type="button" class="btn-primary" (click)="openAddModal()">
+
+            + Add Category
+
+        </button>
+
+    </div>
+
+    }
+
+
+    <!-- Table -->
+    @else {
+
+    <div class="table-card">
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Category</th>
+                        <th>Description</th>
+                        <th>Books</th>
+                        <th>Status</th>
+                        <th class="actions-column">Actions</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    @for (
+                    category of categories();
+                    track trackCategory($index, category)
+                    ) {
+
+                    <tr>
+
+                        <td>
+
+                            <div class="category-name">
+
+                                <div class="category-icon">
+                                    📚
+                                </div>
+
+                                <div>
+                                    <strong>
+                                        {{ category.name }}
+                                    </strong>
+
+                                    @if (category.category_id) {
+
+                                    <small>
+                                        {{ category.category_id }}
+                                    </small>
+
+                                    }
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <td>
+
+                            <span class="description">
+
+                                {{ category.description || '—' }}
+
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <span class="book-count">
+
+                                {{ category.book_count ?? 0 }}
+
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <span class="status" [class.status--active]="category.is_active"
+                                [class.status--inactive]="!category.is_active">
+
+                                <span class="status-dot"></span>
+
+                                {{ category.is_active ? 'Active' : 'Inactive' }}
+
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <div class="actions">
+
+                                <button type="button" class="action-btn edit" title="Edit category"
+                                    (click)="openEditModal(category)">
+
+                                    ✏️
+
+                                </button>
+
+                                <button type="button" class="action-btn delete"
+                                    [title]="category.is_active ? 'Deactivate category' : 'Delete category'"
+                                    (click)="deleteCategory(category)">
+
+                                    {{ category.is_active ? '⏸️' : '🗑️' }}
+
+                                </button>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <div class="table-footer">
+
+            <span>
+
+                {{ categories().length }}
+                {{ categories().length === 1 ? 'category' : 'categories' }}
+
+            </span>
+
+        </div>
+
+    </div>
+
+    }
+
+
+    <!-- Add/Edit Modal -->
+    @if (isModalOpen()) {
+
+    <div class="modal-backdrop" (click)="closeModal()">
+
+        <div class="modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+
+            <div class="modal-header">
+
+                <div>
+
+                    <span class="eyebrow">
+                        {{ isEditing() ? 'Edit Category' : 'New Category' }}
+                    </span>
+
+                    <h2>
+                        {{ isEditing() ? 'Update Category' : 'Add Category' }}
+                    </h2>
+
+                </div>
+
+                <button type="button" class="modal-close" (click)="closeModal()">
+
+                    ×
+
+                </button>
+
+            </div>
+
+
+            <form class="modal-body" (ngSubmit)="saveCategory()">
+
+                <div class="form-group">
+
+                    <label for="category-name">
+                        Category Name <span>*</span>
+                    </label>
+
+                    <input id="category-name" type="text" [(ngModel)]="categoryForm.name" name="categoryName"
+                        maxlength="100" placeholder="e.g. Tamil Literature" required autofocus>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="category-description">
+                        Description
+                    </label>
+
+                    <textarea id="category-description" [(ngModel)]="categoryForm.description"
+                        name="categoryDescription" maxlength="500" rows="4"
+                        placeholder="Optional description..."></textarea>
+
+                </div>
+
+
+                <label class="toggle-row">
+
+                    <span>
+
+                        <strong>Active Category</strong>
+
+                        <small>
+                            Active categories appear when adding books.
+                        </small>
+
+                    </span>
+
+                    <input type="checkbox" [(ngModel)]="categoryForm.is_active" name="categoryActive">
+
+                    <span class="toggle"></span>
+
+                </label>
+
+
+                <div class="modal-footer">
+
+                    <button type="button" class="btn-secondary" (click)="closeModal()">
+
+                        Cancel
+
+                    </button>
+
+                    <button type="submit" class="btn-primary">
+
+                        {{ isEditing() ? 'Save Changes' : 'Create Category' }}
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    }
+
+</section>

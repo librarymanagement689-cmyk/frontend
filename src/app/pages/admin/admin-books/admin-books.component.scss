@@ -827,3 +827,36 @@
     }
   }
 }
+
+
+.field-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.field-label-row label {
+  margin-bottom: 0;
+}
+
+.tamil-toggle {
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  background: transparent;
+  color: inherit;
+  border-radius: 6px;
+  padding: 4px 9px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tamil-toggle:hover {
+  border-color: rgba(212, 175, 55, 0.8);
+}
+
+.tamil-toggle.active {
+  background: rgba(212, 175, 55, 0.12);
+  border-color: rgba(212, 175, 55, 0.8);
+}
