@@ -37,6 +37,7 @@ export class AdminBooksComponent implements OnInit {
   tamilTypingTitle = false;
   tamilTypingAuthor = false;
 
+  isExportModalOpen = false;
 
 
   // Filters & Sort
@@ -54,6 +55,46 @@ export class AdminBooksComponent implements OnInit {
   isLoading = signal(true);
 
   selectedImageFile: File | null = null;
+
+  exportFields: Record<string, boolean> = {
+    book_id: true,
+    serial_number: true,
+    title: true,
+    author: true,
+    author_alias: true,
+    price: true,
+    category: true,
+    language: true,
+    part_or_volume: true,
+    series_name: true,
+    volume_number: true,
+    total_volumes: true,
+    status: true,
+    publish_on_website: true,
+    image_url: true,
+    created_at: true,
+    updated_at: true
+  };
+
+  exportFieldLabels: Record<string, string> = {
+    book_id: 'Book ID',
+    serial_number: 'Serial Number',
+    title: 'Book Name',
+    author: 'Author',
+    author_alias: 'Author Alias',
+    price: 'Price',
+    category: 'Category',
+    language: 'Language',
+    part_or_volume: 'Part / Volume',
+    series_name: 'Series Name',
+    volume_number: 'Volume Number',
+    total_volumes: 'Total Volumes',
+    status: 'Status',
+    publish_on_website: 'Publish on Website',
+    image_url: 'Image URL',
+    created_at: 'Created At',
+    updated_at: 'Updated At'
+  };
 
   // Modal State - Add / Edit Book
   isModalOpen = signal(false);
@@ -79,6 +120,7 @@ export class AdminBooksComponent implements OnInit {
     serial_number: '',
     title: '',
     author: '',
+    author_alias: '',
     price: 0,
     category: 'Fiction',
     language: 'English',
@@ -111,6 +153,76 @@ export class AdminBooksComponent implements OnInit {
     this.categoryService.getCategories(true).subscribe({
       next: (res) => {
         this.categories.set(res.items);
+      },
+      error: (err) => {
+        this.toastService.error(
+          this.errorService.getErrorMessage(err)
+        );
+      }
+    });
+  }
+
+
+  openExportModal(): void {
+    this.isExportModalOpen = true;
+  }
+
+  closeExportModal(): void {
+    this.isExportModalOpen = false;
+  }
+
+  selectAllExportFields(): void {
+    Object.keys(this.exportFields).forEach(key => {
+      this.exportFields[key as keyof typeof this.exportFields] = true;
+    });
+  }
+
+  clearAllExportFields(): void {
+    Object.keys(this.exportFields).forEach(key => {
+      this.exportFields[key as keyof typeof this.exportFields] = false;
+    });
+  }
+
+  exportCSV(): void {
+    const fields = Object.entries(this.exportFields)
+      .filter(([_, selected]) => selected)
+      .map(([field]) => field);
+
+    if (fields.length === 0) {
+      this.toastService.error('Select at least one field to export.');
+      return;
+    }
+
+    const publishBool =
+      this.selectedPublish === 'true'
+        ? true
+        : this.selectedPublish === 'false'
+          ? false
+          : undefined;
+
+    this.adminBookService.exportBooksCSV(
+      fields,
+      this.searchQuery,
+      this.selectedAuthor,
+      this.selectedSerialNumber,
+      this.selectedCategory,
+      this.selectedLanguage,
+      this.selectedStatus,
+      publishBool
+    ).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+
+        link.href = url;
+        link.download = 'library_books.csv';
+        link.click();
+
+        window.URL.revokeObjectURL(url);
+
+        this.closeExportModal();
+
+        this.toastService.success('CSV exported successfully.');
       },
       error: (err) => {
         this.toastService.error(
@@ -284,6 +396,7 @@ export class AdminBooksComponent implements OnInit {
       serial_number: '',
       title: '',
       author: '',
+      author_alias: '',
       price: 150,
       category: this.categories()[0]?.name || '',
       language: 'English',
@@ -302,6 +415,7 @@ export class AdminBooksComponent implements OnInit {
       serial_number: book.serial_number,
       title: book.title,
       author: book.author,
+      author_alias: book.author_alias || '',
       price: book.price,
       category: book.category,
       language: book.language === 'தமிழ்' ? 'Tamil' : book.language,
@@ -643,7 +757,7 @@ export class AdminBooksComponent implements OnInit {
 
   saveBook(): void {
     if (
-      !this.bookForm.serial_number?.trim() ||
+      !String(this.bookForm.serial_number ?? '').trim() ||
       !this.bookForm.title?.trim() ||
       !this.bookForm.author?.trim() ||
       this.bookForm.price < 0
@@ -656,9 +770,10 @@ export class AdminBooksComponent implements OnInit {
 
     if (this.isEditing() && this.editingBookId()) {
       const payload: BookUpdatePayload = {
-        serial_number: this.bookForm.serial_number,
+        serial_number: String(this.bookForm.serial_number ?? '').trim(),
         title: this.bookForm.title,
         author: this.bookForm.author,
+        author_alias: this.bookForm.author_alias,
         price: this.bookForm.price,
         category: this.bookForm.category,
         language: this.bookForm.language,
@@ -678,7 +793,12 @@ export class AdminBooksComponent implements OnInit {
         }
       });
     } else {
-      this.adminBookService.createBook(this.bookForm).subscribe({
+      const payload: BookCreatePayload = {
+        ...this.bookForm,
+        serial_number: String(this.bookForm.serial_number ?? '').trim()
+      };
+
+      this.adminBookService.createBook(payload).subscribe({
         next: (created) => {
           this.toastService.success(`Book ${created.book_id} created successfully.`);
           this.closeModal();

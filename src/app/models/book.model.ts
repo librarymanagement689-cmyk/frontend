@@ -31,6 +31,7 @@ export interface BackendBook {
   serial_number: string;
   title: string;
   author: string;
+  author_alias: string;
   price: number;
   category: string;
   language: string;

@@ -8,6 +8,7 @@ export interface BookCreatePayload {
   serial_number: string;
   title: string;
   author: string;
+  author_alias?: string;
   price: number;
   category: string;
   language: string;
@@ -15,10 +16,13 @@ export interface BookCreatePayload {
   image_url?: string;
 }
 
+
+
 export interface BookUpdatePayload {
   serial_number?: string;
   title?: string;
   author?: string;
+  author_alias?: string;
   price?: number;
   category?: string;
   language?: string;
@@ -77,6 +81,60 @@ export class AdminBookService {
 
   getBookById(book_id: string): Observable<BackendBook> {
     return this.http.get<BackendBook>(`${environment.apiUrl}/admin/books/${book_id}`);
+  }
+
+  exportBooksCSV(
+    fields: string[],
+    search?: string,
+    author?: string,
+    serialNumber?: string,
+    category?: string,
+    language?: string,
+    status?: string,
+    publishOnWebsite?: boolean
+  ): Observable<Blob> {
+
+    let params = new HttpParams()
+      .set('fields', fields.join(','));
+
+    if (search && search.trim()) {
+      params = params.set('search', search.trim());
+    }
+
+    if (author && author.trim()) {
+      params = params.set('author', author.trim());
+    }
+
+    if (serialNumber && serialNumber.trim()) {
+      params = params.set('serial_number', serialNumber.trim());
+    }
+
+    if (category) {
+      params = params.set('category', category);
+    }
+
+    if (language) {
+      params = params.set('language', language);
+    }
+
+    if (status) {
+      params = params.set('status', status);
+    }
+
+    if (publishOnWebsite !== undefined && publishOnWebsite !== null) {
+      params = params.set(
+        'publish_on_website',
+        publishOnWebsite.toString()
+      );
+    }
+
+    return this.http.get(
+      `${environment.apiUrl}/admin/books/export`,
+      {
+        params,
+        responseType: 'blob'
+      }
+    );
   }
 
   createBook(data: BookCreatePayload): Observable<BackendBook> {
