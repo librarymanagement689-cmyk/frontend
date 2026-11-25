@@ -44,6 +44,10 @@ export interface CSVImportSummaryResponse {
 export class AdminBookService {
   private http = inject(HttpClient);
 
+  getAuthors(): Observable<string[]> {
+    return this.http.get<string[]>(`${environment.apiUrl}/admin/books/authors`);
+  }
+
   getBooks(
     search?: string,
     category?: string,
@@ -135,6 +139,12 @@ export class AdminBookService {
         responseType: 'blob'
       }
     );
+  }
+
+  exportBooksWord(): Observable<Blob> {
+    return this.http.get(`${environment.apiUrl}/admin/books/export-word`, {
+      responseType: 'blob'
+    });
   }
 
   createBook(data: BookCreatePayload): Observable<BackendBook> {

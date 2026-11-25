@@ -308,3 +308,111 @@ ul, ol {
     background: $color-gold;
   }
 }
+
+// =============================================================================
+// COMPREHENSIVE RESPONSIVE ENHANCEMENTS
+// =============================================================================
+
+// Tables: ensure all data tables scroll horizontally smoothly on mobile
+.table-responsive,
+.table-card {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  @media (max-width: 768px) {
+    min-width: 620px;
+  }
+}
+
+// Global modal responsiveness
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+  padding: 0.75rem;
+
+  @media (max-width: 480px) {
+    padding: 0.35rem;
+  }
+}
+
+.modal-card {
+  width: 100%;
+  max-width: min(96vw, 750px);
+  max-height: 92vh;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 12px;
+
+  .modal-body {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    max-height: calc(92vh - 125px);
+  }
+
+  .modal-footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+}
+
+// Form rows: stack automatically on smaller screens
+@media (max-width: 640px) {
+  .form-row {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+  }
+
+  .page-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+
+    .btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  .filters-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    .search-wrap,
+    .filter-group,
+    select,
+    input {
+      width: 100% !important;
+    }
+  }
+}
+
+// Touch optimization on mobile
+@media (hover: none) and (pointer: coarse) {
+  button,
+  .btn,
+  .nav-item,
+  .chip-remove,
+  .btn-action {
+    min-height: 38px;
+  }
+}

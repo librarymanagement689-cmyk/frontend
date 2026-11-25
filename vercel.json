@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "outputDirectory": "dist/skl-website/browser",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

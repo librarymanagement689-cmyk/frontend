@@ -187,6 +187,33 @@ export interface PaginatedResult<T> {
 }
 
 // --- Member Models ---
+export interface PastBookItem {
+  book_id: string;
+  title?: string;
+  date_borrowed?: string;
+  notes?: string;
+}
+
+export interface PreviouslyBorrowedBookRecord {
+  book_id: string;
+  title: string;
+  borrowed_date?: string;
+  due_date?: string;
+  returned?: boolean;
+  returned_date?: string;
+  order_id?: string;
+  source?: 'manual_record' | 'order' | string;
+  notes?: string;
+}
+
+export interface MemberPreviouslyBorrowedResponse {
+  member_id: string;
+  member_name: string;
+  total_borrowed_unique_books: number;
+  book_ids: string[];
+  items: PreviouslyBorrowedBookRecord[];
+}
+
 export interface Member {
   member_id: string;     // MEM-00001
   name: string;
@@ -195,6 +222,13 @@ export interface Member {
   subscription_type_id: string;
   subscription_start_date: string;
   subscription_end_date: string;
+  join_date?: string;
+  discontinued_date?: string;
+  security_deposit_amount?: number;
+  security_deposit_returned?: boolean;
+  security_deposit_returned_date?: string;
+  security_deposit_notes?: string;
+  past_books?: PastBookItem[];
   status: 'active' | 'inactive' | 'expired' | string;
   created_at?: string;
   updated_at?: string;
@@ -207,6 +241,13 @@ export interface MemberCreate {
   subscription_type_id: string;
   subscription_start_date: string;
   subscription_end_date: string;
+  join_date?: string;
+  discontinued_date?: string;
+  security_deposit_amount?: number;
+  security_deposit_returned?: boolean;
+  security_deposit_returned_date?: string;
+  security_deposit_notes?: string;
+  past_books?: PastBookItem[];
   status?: 'active' | 'inactive' | 'expired';
 }
 
@@ -251,6 +292,8 @@ export interface OrderItem {
 export interface Order {
   order_id: string;     // ORD-00001
   member_id: string;
+  member_name?: string;
+  subscription_name?: string;
   items: OrderItem[];
   borrowed_date: string;
   due_date: string;
@@ -265,7 +308,7 @@ export interface Order {
 
 export interface OrderCreateItem {
   book_id: string;
-  lending_amount: number;
+  lending_amount?: number;
 }
 
 export interface OrderCreate {

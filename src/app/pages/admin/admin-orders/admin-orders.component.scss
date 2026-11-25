@@ -89,7 +89,7 @@
     background-color: #112236;
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 12px;
-    overflow: hidden;
+    overflow-x: auto;
 
     .loading-state,
     .empty-state {
@@ -139,6 +139,24 @@
       color: $color-white;
       padding: 2px 8px;
       border-radius: 4px;
+    }
+
+    .borrower-name {
+      font-weight: 600;
+      color: $color-white;
+      white-space: nowrap;
+    }
+
+    .plan-badge {
+      display: inline-block;
+      background: rgba(59, 130, 246, 0.12);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      white-space: nowrap;
     }
 
     .order-items-list {
@@ -248,10 +266,14 @@
     border-radius: 12px;
     width: 100%;
     max-width: 550px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
 
     &--lg {
-      max-width: 700px;
+      max-width: 750px;
     }
 
     .modal-header {
@@ -260,6 +282,7 @@
       align-items: center;
       padding: 1.25rem 1.5rem;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      flex-shrink: 0;
 
       h3 {
         color: $color-white;
@@ -269,7 +292,22 @@
       .close-btn {
         color: #94a3b8;
         font-size: 1.5rem;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+
+        &:hover {
+          color: $color-white;
+        }
       }
+    }
+
+    .modal-form {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      overflow: hidden;
+      min-height: 0;
     }
 
     .modal-body {
@@ -277,6 +315,9 @@
       display: flex;
       flex-direction: column;
       gap: 1rem;
+      overflow-y: auto;
+      flex: 1;
+      min-height: 0;
 
       .form-group {
         display: flex;
@@ -316,6 +357,11 @@
           display: block;
         }
 
+        .table-responsive {
+          width: 100%;
+          overflow-x: auto;
+        }
+
         .selected-books-table {
           width: 100%;
           border-collapse: collapse;
@@ -346,27 +392,16 @@
             }
           }
         }
-
-        .subtotal-display {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding-top: 0.5rem;
-          border-top: 1px solid rgba(255, 255, 255, 0.1);
-          font-weight: 600;
-
-          .subtotal-amount {
-            color: $color-gold;
-            font-size: 1.25rem;
-            font-weight: 800;
-          }
-        }
       }
 
       .form-row {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 1rem;
+
+        @media (max-width: 576px) {
+          grid-template-columns: 1fr;
+        }
       }
     }
 
@@ -374,7 +409,10 @@
       display: flex;
       justify-content: flex-end;
       gap: 0.75rem;
-      margin-top: 1rem;
+      padding: 1rem 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      background-color: #0e1a29;
+      flex-shrink: 0;
     }
   }
 
@@ -407,73 +445,68 @@
   }
 }
 
-/* Lending Amount Field */
-.lending-amount-field {
-  display: flex;
-  align-items: center;
-  width: 140px;
-  border: 1px solid #d8d2c8;
+.rental-badge {
+  display: inline-block;
+  background: rgba(212, 175, 55, 0.15);
+  color: $color-gold;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.billing-breakdown-card {
+  margin-top: 1rem;
+  background: #091522;
+  border: 1px solid rgba(212, 175, 55, 0.25);
   border-radius: 8px;
-  background: #fff;
-  overflow: hidden;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  padding: 0.9rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 
-  span {
+  .breakdown-row {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
-    padding-left: 12px;
-    font-weight: 600;
-    color: #8a6a32;
-    font-size: 14px;
-  }
+    font-size: 0.9rem;
+    color: #cbd5e1;
 
-  .form-control {
-    width: 100%;
-    border: 0;
-    outline: none;
-    box-shadow: none;
-    background: transparent;
-    padding: 9px 10px 9px 5px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #29251f;
-
-    &:focus {
-      border: 0;
-      outline: none;
-      box-shadow: none;
+    .mrp-amount {
+      font-weight: 600;
+      color: #e2e8f0;
     }
 
-    &::placeholder {
-      color: #aaa39a;
-      font-weight: 400;
+    .rental-amount {
+      font-weight: 600;
+      color: $color-gold;
     }
 
-    /* Remove browser number arrows */
-    &::-webkit-inner-spin-button,
-    &::-webkit-outer-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
+    &.total-row {
+      margin-top: 0.3rem;
+      padding-top: 0.6rem;
+      border-top: 1px dashed rgba(255, 255, 255, 0.15);
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: $color-white;
 
-    &[type='number'] {
-      appearance: textfield;
-      -moz-appearance: textfield;
+      .final-amount {
+        font-size: 1.25rem;
+        color: #4ade80;
+        font-weight: 800;
+      }
     }
-  }
-
-  &:focus-within {
-    border-color: #b58a3a;
-    box-shadow: 0 0 0 3px rgba(181, 138, 58, 0.12);
   }
 }
 
 .selected-books-table {
+  width: 100%;
 
   th,
   td {
     vertical-align: middle;
+    padding: 0.5rem;
   }
 
   th:nth-child(2),
@@ -484,12 +517,13 @@
 
   th:nth-child(3),
   td:nth-child(3) {
-    width: 160px;
+    text-align: right;
+    white-space: nowrap;
   }
 
   th:nth-child(4),
   td:nth-child(4) {
-    width: 100px;
+    width: 90px;
     text-align: right;
   }
 }
@@ -497,14 +531,70 @@
 .selected-book-info {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 2px;
 
   strong {
-    color: #29251f;
+    color: $color-white;
+    font-size: 0.9rem;
   }
 
   small {
-    color: #8b857c;
-    font-size: 12px;
+    color: #94a3b8;
+    font-size: 0.8rem;
   }
+}
+
+.member-history-pill {
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: #e2e8f0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+
+  strong {
+    color: $color-gold;
+  }
+
+  .pill-hint {
+    color: #94a3b8;
+    font-size: 0.8rem;
+    font-style: italic;
+  }
+}
+
+.book-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.badge-duplicate {
+  display: inline-block;
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.book-search-result--blocked {
+  opacity: 0.65;
+  background: rgba(239, 68, 68, 0.05) !important;
+  border-color: rgba(239, 68, 68, 0.2) !important;
+}
+
+.btn--disabled {
+  background: #334155 !important;
+  color: #94a3b8 !important;
+  cursor: not-allowed !important;
+  border: 1px solid #475569 !important;
 }

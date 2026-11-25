@@ -10,27 +10,22 @@
   </div>
 
   @if (successMessage()) {
-    <div class="alert alert--success">
-      {{ successMessage() }}
-    </div>
+  <div class="alert alert--success">
+    {{ successMessage() }}
+  </div>
   }
 
   @if (errorMessage()) {
-    <div class="alert alert--error">
-      {{ errorMessage() }}
-    </div>
+  <div class="alert alert--error">
+    {{ errorMessage() }}
+  </div>
   }
 
   <!-- Filters -->
   <div class="filters-bar">
     <div class="search-wrap">
-      <input
-        type="text"
-        [(ngModel)]="searchQuery"
-        (keyup.enter)="onSearch()"
-        placeholder="Search name, phone, email, or MEM-XXXXX ID..."
-        class="form-control"
-      />
+      <input type="text" [(ngModel)]="searchQuery" (keyup.enter)="onSearch()"
+        placeholder="Search name, phone, email, or MEM-XXXXX ID..." class="form-control" />
       <button (click)="onSearch()" class="btn btn--outline-gold btn--sm">Search</button>
     </div>
 
@@ -45,7 +40,7 @@
       <select [(ngModel)]="selectedSubscription" (change)="onSearch()" class="form-control">
         <option value="">All Subscriptions</option>
         @for (sub of subscriptions(); track sub.subscription_id) {
-          <option [value]="sub.subscription_id">{{ sub.name }}</option>
+        <option [value]="sub.subscription_id">{{ sub.name }}</option>
         }
       </select>
     </div>
@@ -54,125 +49,172 @@
   <!-- Members Table -->
   <div class="table-card">
     @if (isLoading()) {
-      <div class="loading-state">
-        <div class="spinner"></div>
-        <span>Loading library members...</span>
-      </div>
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <span>Loading library members...</span>
+    </div>
     } @else if (members().length === 0) {
-      <div class="empty-state">
-        <p>No members found matching your search.</p>
-      </div>
+    <div class="empty-state">
+      <p>No members found matching your search.</p>
+    </div>
     } @else {
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Member ID</th>
-            <th>Name</th>
-            <th>Contact</th>
-            <th>Subscription</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (member of members(); track member.member_id) {
-            <tr>
-              <td><span class="id-badge">{{ member.member_id }}</span></td>
-              <td class="font-semibold">{{ member.name }}</td>
-              <td>
-                <div class="contact-info">
-                  <span>📞 {{ member.phone }}</span>
-                  <small>✉️ {{ member.email }}</small>
-                </div>
-              </td>
-              <td><span class="tag-pill">{{ getSubscriptionName(member.subscription_type_id) }}</span></td>
-              <td>{{ member.subscription_start_date }}</td>
-              <td>{{ member.subscription_end_date }}</td>
-              <td>
-                <span class="badge" [ngClass]="{
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Member ID</th>
+          <th>Name</th>
+          <th>Contact</th>
+          <th>Subscription</th>
+          <th>Joined / Discontinued</th>
+          <th>Security Deposit</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (member of members(); track member.member_id) {
+        <tr>
+          <td><span class="id-badge">{{ member.member_id }}</span></td>
+          <td class="font-semibold">{{ member.name }}</td>
+          <td>
+            <div class="contact-info">
+              <span>📞 {{ member.phone }}</span>
+              <small>✉️ {{ member.email }}</small>
+            </div>
+          </td>
+          <td><span class="tag-pill">{{ getSubscriptionName(member.subscription_type_id) }}</span></td>
+          <td>
+            <div class="timeline-meta">
+              <small>📅 Joined: {{ member.join_date || member.subscription_start_date }}</small>
+              @if (member.discontinued_date) {
+              <small class="text-error">⏹️ End: {{ member.discontinued_date }}</small>
+              } @else if (member.status === 'inactive' || member.status === 'expired') {
+              <small class="text-error">⏹️ Expired: {{ member.subscription_end_date }}</small>
+              } @else {
+              <small class="text-success">🟢 Active</small>
+              }
+            </div>
+          </td>
+          <td>
+            <div class="deposit-meta">
+              <span class="font-bold">₹{{ member.security_deposit_amount || 0 }}</span>
+              @if (member.security_deposit_returned) {
+              <span class="deposit-badge deposit-badge--returned"
+                [title]="member.security_deposit_notes || 'Deposit refunded'">
+                ✅ Refunded ({{ member.security_deposit_returned_date }})
+              </span>
+              } @else if ((member.security_deposit_amount || 0) > 0) {
+              <span class="deposit-badge deposit-badge--pending">
+                ⏳ Pending Refund
+              </span>
+              } @else {
+              <span class="deposit-badge deposit-badge--none">No Deposit</span>
+              }
+            </div>
+          </td>
+          <td>
+            <span class="badge" [ngClass]="{
                   'badge--available': member.status === 'active',
                   'badge--unavailable': member.status === 'inactive' || member.status === 'expired'
                 }">
-                  {{ member.status | uppercase }}
-                </span>
-              </td>
-              <td>
-                <div class="action-buttons">
-                  <button (click)="openHistoryModal(member)" class="btn-action history" title="View Borrowing History">📜 History</button>
-                  <button (click)="openEditModal(member)" class="btn-action edit" title="Edit Member">✏️ Edit</button>
-                  <button (click)="deleteMember(member)" class="btn-action delete" title="Delete Member">🗑️</button>
-                </div>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
+              {{ member.status | uppercase }}
+            </span>
+          </td>
+          <td>
+            <div class="action-buttons">
+              <button (click)="openHistoryModal(member)" class="btn-action history"
+                title="View Borrowing History & Timeline">📜 History</button>
+              <button (click)="openEditModal(member)" class="btn-action edit" title="Edit Member">✏️ Edit</button>
+              <button (click)="deleteMember(member)" class="btn-action delete" title="Delete Member">🗑️</button>
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
 
-      <!-- Pagination -->
-      <div class="table-pagination">
-        <span>Showing page {{ currentPage }} of {{ totalPages() }} ({{ totalCount() }} total members)</span>
-        <div class="page-controls">
-          <button (click)="loadMembers(currentPage - 1)" [disabled]="currentPage <= 1" class="btn btn--outline btn--sm">
-            Previous
-          </button>
-          <button (click)="loadMembers(currentPage + 1)" [disabled]="currentPage >= totalPages()" class="btn btn--outline btn--sm">
-            Next
-          </button>
-        </div>
+    <!-- Pagination -->
+    <div class="table-pagination">
+      <span>Showing page {{ currentPage }} of {{ totalPages() }} ({{ totalCount() }} total members)</span>
+      <div class="page-controls">
+        <button (click)="loadMembers(currentPage - 1)" [disabled]="currentPage <= 1" class="btn btn--outline btn--sm">
+          Previous
+        </button>
+        <button (click)="loadMembers(currentPage + 1)" [disabled]="currentPage >= totalPages()"
+          class="btn btn--outline btn--sm">
+          Next
+        </button>
       </div>
+    </div>
     }
   </div>
 
   <!-- Add/Edit Member Modal -->
   @if (isModalOpen()) {
-    <div class="modal-backdrop" (click)="closeModal()">
-      <div class="modal-card" (click)="$event.stopPropagation()">
-        <div class="modal-header">
-          <h3>{{ isEditing() ? 'Edit Member (' + editingMemberId() + ')' : 'Register New Member' }}</h3>
-          <button (click)="closeModal()" class="close-btn">&times;</button>
+  <div class="modal-backdrop" (click)="closeModal()">
+    <div class="modal-card modal-card--lg" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ isEditing() ? 'Edit Member (' + editingMemberId() + ')' : 'Register New Member' }}</h3>
+        <button (click)="closeModal()" class="close-btn">&times;</button>
+      </div>
+
+      <form (ngSubmit)="saveMember()" class="modal-body">
+        <div class="form-group">
+          <label>Full Name *</label>
+          <input type="text" [(ngModel)]="memberForm.name" name="name" required class="form-control"
+            placeholder="Member Full Name" />
         </div>
 
-        <form (ngSubmit)="saveMember()" class="modal-body">
+        <div class="form-row">
           <div class="form-group">
-            <label>Full Name *</label>
-            <input type="text" [(ngModel)]="memberForm.name" name="name" required class="form-control" placeholder="Member Full Name" />
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label>Phone Number *</label>
-              <input type="tel" [(ngModel)]="memberForm.phone" name="phone" required class="form-control" placeholder="+91 9876543210" />
-            </div>
-
-            <div class="form-group">
-              <label>Email Address *</label>
-              <input type="email" [(ngModel)]="memberForm.email" name="email" required class="form-control" placeholder="member@gmail.com" />
-            </div>
+            <label>Phone Number *</label>
+            <input type="tel" [(ngModel)]="memberForm.phone" name="phone" required class="form-control"
+              placeholder="+91 9876543210" />
           </div>
 
           <div class="form-group">
-            <label>Subscription Plan *</label>
-            <select [(ngModel)]="memberForm.subscription_type_id" (change)="onSubscriptionChange()" name="subscription_type_id" required class="form-control">
-              @for (sub of subscriptions(); track sub.subscription_id) {
-                <option [value]="sub.subscription_id">
-                  {{ sub.name }} ({{ sub.duration_days }} Days — ₹{{ sub.price }})
-                </option>
-              }
-            </select>
+            <label>Email Address *</label>
+            <input type="email" [(ngModel)]="memberForm.email" name="email" required class="form-control"
+              placeholder="member@gmail.com" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Subscription Plan *</label>
+          <select [(ngModel)]="memberForm.subscription_type_id" (change)="onSubscriptionChange()"
+            name="subscription_type_id" required class="form-control">
+            @for (sub of subscriptions(); track sub.subscription_id) {
+            <option [value]="sub.subscription_id">
+              {{ sub.name }} ({{ sub.duration_days }} Days — ₹{{ sub.price }})
+            </option>
+            }
+          </select>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Member Join Date</label>
+            <input type="date" [(ngModel)]="memberForm.join_date" name="join_date" class="form-control" />
           </div>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label>Start Date *</label>
-              <input type="date" [(ngModel)]="memberForm.subscription_start_date" (change)="onSubscriptionChange()" name="subscription_start_date" required class="form-control" />
-            </div>
+          <div class="form-group">
+            <label>Subscription Start Date *</label>
+            <input type="date" [(ngModel)]="memberForm.subscription_start_date" (change)="onSubscriptionChange()"
+              name="subscription_start_date" required class="form-control" />
+          </div>
 
-            <div class="form-group">
-              <label>End Date *</label>
-              <input type="date" [(ngModel)]="memberForm.subscription_end_date" name="subscription_end_date" required class="form-control" />
-            </div>
+          <div class="form-group">
+            <label>Subscription End Date *</label>
+            <input type="date" [(ngModel)]="memberForm.subscription_end_date" name="subscription_end_date" required
+              class="form-control" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Discontinued Date (If Membership Ended)</label>
+            <input type="date" [(ngModel)]="memberForm.discontinued_date" name="discontinued_date"
+              class="form-control" />
           </div>
 
           <div class="form-group">
@@ -183,75 +225,400 @@
               <option value="expired">Expired</option>
             </select>
           </div>
-
-          <div class="modal-footer">
-            <button type="button" (click)="closeModal()" class="btn btn--outline">Cancel</button>
-            <button type="submit" class="btn btn--primary">
-              {{ isEditing() ? 'Save Changes' : 'Register Member' }}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  }
-
-  <!-- History Modal -->
-  @if (isHistoryModalOpen()) {
-    <div class="modal-backdrop" (click)="closeHistoryModal()">
-      <div class="modal-card modal-card--lg" (click)="$event.stopPropagation()">
-        <div class="modal-header">
-          <h3>Borrowing History — {{ selectedMemberForHistory()?.name }} ({{ selectedMemberForHistory()?.member_id }})</h3>
-          <button (click)="closeHistoryModal()" class="close-btn">&times;</button>
         </div>
 
-        <div class="modal-body">
-          @if (isLoadingHistory()) {
-            <div class="loading-state">
-              <div class="spinner"></div>
-              <span>Fetching order history...</span>
+        <!-- Security Deposit Section -->
+        <div class="form-section">
+          <h4 class="form-section-title">💰 Security Deposit Management</h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Security Deposit Amount (₹)</label>
+              <input type="number" [(ngModel)]="memberForm.security_deposit_amount" name="security_deposit_amount"
+                min="0" class="form-control" placeholder="e.g. 500" />
             </div>
-          } @else if (memberHistory().length === 0) {
-            <p class="empty-text">No lending history recorded for this member.</p>
-          } @else {
-            <div class="history-list">
-              @for (order of memberHistory(); track order.order_id) {
-                <div class="history-card">
-                  <div class="history-card-header">
-                    <strong>Order {{ order.order_id }}</strong>
-                    <span class="badge" [ngClass]="order.status === 'active' ? 'badge--available' : 'badge--unavailable'">
-                      {{ order.status | uppercase }}
-                    </span>
-                  </div>
-                  <div class="history-details">
-                    <span><strong>Borrowed:</strong> {{ order.borrowed_date }}</span>
-                    <span><strong>Due:</strong> {{ order.due_date }}</span>
-                    <span><strong>Amount Paid:</strong> ₹{{ order.amount_paid }}</span>
-                  </div>
-                  <div class="history-items">
-                    <span>Books:</span>
-                    <ul>
-                      @for (item of order.items; track item.book_id) {
-                        <li>
-                          {{ item.title }} ({{ item.book_id }}) - ₹{{ item.price }}
-                          @if (item.returned) {
-                            <span class="returned-tag">Returned on {{ item.returned_date }}</span>
-                          } @else {
-                            <span class="borrowed-tag">Not Returned</span>
-                          }
-                        </li>
-                      }
-                    </ul>
-                  </div>
-                </div>
+
+            <div class="form-group checkbox-group">
+              <label class="checkbox-label">
+                <input type="checkbox" [(ngModel)]="memberForm.security_deposit_returned"
+                  name="security_deposit_returned" />
+                <span>Security Deposit Refunded to Customer?</span>
+              </label>
+            </div>
+          </div>
+
+          @if (memberForm.security_deposit_returned) {
+          <div class="form-row">
+            <div class="form-group">
+              <label>Refund Date</label>
+              <input type="date" [(ngModel)]="memberForm.security_deposit_returned_date"
+                name="security_deposit_returned_date" class="form-control" />
+            </div>
+
+            <div class="form-group">
+              <label>Refund Notes / Payment Ref</label>
+              <input type="text" [(ngModel)]="memberForm.security_deposit_notes" name="security_deposit_notes"
+                class="form-control" placeholder="e.g., Refunded ₹500 via GPay" />
+            </div>
+          </div>
+          }
+        </div>
+
+        <!-- Previously Borrowed Books Section (Initial / Past History) -->
+        <div class="form-section">
+          <h4 class="form-section-title">📚 Previously Borrowed Books (Prior History)</h4>
+          <p class="form-section-subtitle">
+            Add books this member previously took so the system blocks duplicate borrowing of the same books in future
+            orders.
+          </p>
+
+          <div class="past-books-search-box">
+            <input type="text" [(ngModel)]="pastBookSearchQuery" [ngModelOptions]="{standalone: true}"
+              placeholder="🔍 Type in English or Tamil (e.g. ponniyin, kalki, deivathin kural) or Book ID..."
+              class="form-control" />
+            @if (pastBookSearchQuery.trim()) {
+            <div class="past-books-dropdown">
+              @for (b of filteredBooksForPast; track b.book_id) {
+              <div class="dropdown-item">
+                <span><strong>{{ b.title }}</strong> ({{ b.book_id }}) · <em>{{ b.author }}</em></span>
+                <button type="button" (click)="addBookToFormPastBooks(b)" class="btn btn--xs btn--outline-gold">
+                  + Add to History
+                </button>
+              </div>
+              }
+              @if (filteredBooksForPast.length === 0) {
+              <div class="dropdown-empty">No books found matching search</div>
               }
             </div>
+            }
+          </div>
+
+          <!-- Author Selection in Form -->
+          <div class="author-select-box">
+            <label class="text-xs font-semibold text-muted">Or Choose Author to view and select their books:</label>
+            <div class="author-dropdown-row">
+              <select [(ngModel)]="selectedAuthorForForm" [ngModelOptions]="{standalone: true}"
+                (ngModelChange)="onAuthorChangeForForm($event)" class="form-control">
+                <option value="">-- Choose Author ({{ authorsList().length }} Authors) --</option>
+                @for (a of authorsList(); track a) {
+                <option [value]="a">{{ a }}</option>
+                }
+              </select>
+              @if (selectedAuthorForForm && booksByAuthorForForm().length > 0) {
+              <button type="button" (click)="addAllAuthorBooksToForm()" class="btn btn--xs btn--outline-gold">
+                + Add All ({{ booksByAuthorForForm().length }})
+              </button>
+              }
+            </div>
+
+            @if (isLoadingAuthorBooksForForm()) {
+            <small class="text-muted">Loading books by {{ selectedAuthorForForm }}...</small>
+            }
+
+            @if (selectedAuthorForForm && booksByAuthorForForm().length > 0) {
+            <div class="author-books-list">
+              @for (ab of booksByAuthorForForm(); track ab.book_id) {
+              <div class="author-book-item">
+                <span class="book-name"><strong>{{ ab.title }}</strong> ({{ ab.book_id }})</span>
+                <button type="button" (click)="addBookToFormPastBooks(ab)" class="btn btn--xs btn--outline-gold"
+                  [disabled]="isBookInFormPastList(ab.book_id)">
+                  {{ isBookInFormPastList(ab.book_id) ? '✓ Added' : '+ Add' }}
+                </button>
+              </div>
+              }
+            </div>
+            }
+          </div>
+
+          @if (pastBooksFormList.length > 0) {
+          <div class="past-books-chips">
+            @for (pb of pastBooksFormList; track pb.book_id) {
+            <span class="past-book-chip">
+              📖 {{ pb.title || pb.book_id }} ({{ pb.book_id }})
+              <button type="button" (click)="removeBookFromFormPastBooks(pb.book_id)" class="chip-remove"
+                title="Remove">&times;</button>
+            </span>
+            }
+          </div>
+          } @else {
+          <p class="empty-hint">No prior books added yet. (Optional — can also be added anytime from Member History)</p>
           }
         </div>
 
         <div class="modal-footer">
-          <button (click)="closeHistoryModal()" class="btn btn--outline">Close</button>
+          <button type="button" (click)="closeModal()" class="btn btn--outline">Cancel</button>
+          <button type="submit" class="btn btn--primary">
+            {{ isEditing() ? 'Save Changes' : 'Register Member' }}
+          </button>
         </div>
+      </form>
+    </div>
+  </div>
+  }
+
+  <!-- History & Timeline Modal -->
+  @if (isHistoryModalOpen()) {
+  <div class="modal-backdrop" (click)="closeHistoryModal()">
+    <div class="modal-card modal-card--lg" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Member Timeline & History — {{ selectedMemberForHistory()?.name }} ({{ selectedMemberForHistory()?.member_id
+          }})</h3>
+        <button (click)="closeHistoryModal()" class="close-btn">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        @if (isLoadingHistory()) {
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <span>Fetching order history & timeline...</span>
+        </div>
+        } @else {
+        <!-- Member Overview Header Card -->
+        <div class="member-timeline-card">
+          <div class="timeline-grid">
+            <div class="timeline-box">
+              <span class="label">📅 Joined On</span>
+              <strong class="val">{{ selectedMemberDetails()?.join_date ||
+                selectedMemberDetails()?.subscription_start_date || 'N/A' }}</strong>
+            </div>
+
+            <div class="timeline-box">
+              <span class="label">⏹️ Discontinued Date</span>
+              <strong class="val">
+                @if (selectedMemberDetails()?.discontinued_date) {
+                <span class="text-error">{{ selectedMemberDetails()?.discontinued_date }}</span>
+                } @else if (selectedMemberDetails()?.status === 'inactive' || selectedMemberDetails()?.status ===
+                'expired') {
+                <span class="text-error">Ended {{ selectedMemberDetails()?.subscription_end_date }}</span>
+                } @else {
+                <span class="text-success">Active Member</span>
+                }
+              </strong>
+            </div>
+
+            <div class="timeline-box">
+              <span class="label">💵 Security Deposit</span>
+              <strong class="val">₹{{ selectedMemberDetails()?.security_deposit_amount || 0 }}</strong>
+            </div>
+
+            <div class="timeline-box deposit-status-box">
+              <span class="label">🛡️ Deposit Refund Status</span>
+              @if (selectedMemberDetails()?.security_deposit_returned) {
+              <span class="badge badge--available">
+                ✅ Refunded on {{ selectedMemberDetails()?.security_deposit_returned_date }}
+              </span>
+              <button (click)="toggleDepositRefundInModal(false)" class="btn btn--xs btn--outline">
+                Mark Pending
+              </button>
+              } @else {
+              <span class="badge badge--unavailable">
+                ⏳ Pending Refund
+              </span>
+              <button (click)="toggleDepositRefundInModal(true)" class="btn btn--xs btn--primary">
+                Mark Deposit Refunded
+              </button>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- History Navigation Tabs -->
+        <div class="history-tabs">
+          <button type="button" class="history-tab" [class.active]="historyActiveTab() === 'all_borrowed'"
+            (click)="historyActiveTab.set('all_borrowed')">
+            📚 All Previously Taken Books ({{ totalUniqueBooksBorrowed() }})
+          </button>
+          <button type="button" class="history-tab" [class.active]="historyActiveTab() === 'orders'"
+            (click)="historyActiveTab.set('orders')">
+            📦 Lending Orders History ({{ memberHistory().length }})
+          </button>
+        </div>
+
+        <!-- Tab 1: All Previously Borrowed Books & Add Prior Books -->
+        @if (historyActiveTab() === 'all_borrowed') {
+        <div class="tab-pane">
+          <div class="history-tab-header">
+            <div>
+              <h4 class="timeline-section-title">All Books Read / Borrowed (Duplicate Prevention Active)</h4>
+              <p class="tab-description">
+                These books have been taken by this member. The system will automatically block this member from
+                borrowing any of these books again.
+              </p>
+            </div>
+          </div>
+
+          <!-- Fast Add Past Book Section -->
+          <div class="add-past-book-card">
+            <label class="font-semibold text-gold">➕ Add Book Previously Taken by Member</label>
+            <p class="text-xs text-muted">
+              Type title in English or Tamil (e.g., "velpari", "ponniyin selvan", "kalki"), or pick an author to select
+              books:
+            </p>
+
+            <div class="add-history-book-bar">
+              <input type="text" [(ngModel)]="historyBookSearchQuery"
+                placeholder="🔍 Type title, author or Book ID in English or Tamil..." class="form-control" />
+              @if (historyBookSearchQuery.trim()) {
+              <div class="past-books-dropdown">
+                @for (b of filteredBooksForHistorySearch; track b.book_id) {
+                <div class="dropdown-item">
+                  <span><strong>{{ b.title }}</strong> ({{ b.book_id }}) · <em>{{ b.author }}</em></span>
+                  <button type="button" (click)="addPastBookToExistingMember(b)" class="btn btn--xs btn--primary">
+                    + Add to History
+                  </button>
+                </div>
+                }
+                @if (filteredBooksForHistorySearch.length === 0) {
+                <div class="dropdown-empty">No books found matching search</div>
+                }
+              </div>
+              }
+            </div>
+
+            <!-- Author Selection in History Modal -->
+            <div class="author-select-box mt-2">
+              <label class="text-xs font-semibold text-muted">Or Browse by Author:</label>
+              <div class="author-dropdown-row">
+                <select [(ngModel)]="selectedAuthorInHistory" (ngModelChange)="onAuthorChangeInHistory($event)"
+                  class="form-control">
+                  <option value="">-- Choose Author ({{ authorsList().length }} Authors) --</option>
+                  @for (a of authorsList(); track a) {
+                  <option [value]="a">{{ a }}</option>
+                  }
+                </select>
+                @if (selectedAuthorInHistory && booksByAuthorInHistory().length > 0) {
+                <button type="button" (click)="addAllAuthorBooksToMemberHistory()"
+                  class="btn btn--xs btn--outline-gold">
+                  + Add All ({{ booksByAuthorInHistory().length }})
+                </button>
+                }
+              </div>
+
+              @if (isLoadingAuthorBooksInHistory()) {
+              <small class="text-muted">Loading books by {{ selectedAuthorInHistory }}...</small>
+              }
+
+              @if (selectedAuthorInHistory && booksByAuthorInHistory().length > 0) {
+              <div class="author-books-list">
+                @for (ab of booksByAuthorInHistory(); track ab.book_id) {
+                <div class="author-book-item">
+                  <span class="book-name"><strong>{{ ab.title }}</strong> ({{ ab.book_id }})</span>
+                  <button type="button" (click)="addPastBookToExistingMember(ab)" class="btn btn--xs btn--primary"
+                    [disabled]="isBookInHistoryRecords(ab.book_id)">
+                    {{ isBookInHistoryRecords(ab.book_id) ? '✓ Already Read' : '+ Add' }}
+                  </button>
+                </div>
+                }
+              </div>
+              }
+            </div>
+          </div>
+
+          @if (previouslyBorrowedRecords().length === 0) {
+          <p class="empty-text">No prior books or borrowing history recorded for this member.</p>
+          } @else {
+          <div class="table-responsive">
+            <table class="data-table history-books-table">
+              <thead>
+                <tr>
+                  <th>Book ID</th>
+                  <th>Book Title</th>
+                  <th>Date Taken</th>
+                  <th>Record Source</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of previouslyBorrowedRecords(); track item.book_id) {
+                <tr>
+                  <td><span class="id-badge">{{ item.book_id }}</span></td>
+                  <td class="font-semibold">{{ item.title }}</td>
+                  <td>{{ item.borrowed_date || 'Prior History' }}</td>
+                  <td>
+                    @if (item.source === 'order') {
+                    <span class="tag-pill tag-pill--order">Lending Order {{ item.order_id }}</span>
+                    } @else {
+                    <span class="tag-pill tag-pill--manual">Historical / Prior Record</span>
+                    }
+                  </td>
+                  <td>
+                    @if (item.returned) {
+                    <span class="badge badge--available">Returned</span>
+                    } @else if (item.source === 'order') {
+                    <span class="badge badge--unavailable">Currently Lent</span>
+                    } @else {
+                    <span class="badge badge--available">Read / Completed</span>
+                    }
+                  </td>
+                  <td>
+                    @if (item.source === 'manual_record') {
+                    <button (click)="removePastBookFromExistingMember(item.book_id)" class="btn-action delete"
+                      title="Remove from member record">🗑️</button>
+                    } @else {
+                    <span class="text-muted text-xs">From Order</span>
+                    }
+                  </td>
+                </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          }
+        </div>
+        }
+
+        <!-- Tab 2: Orders History -->
+        @if (historyActiveTab() === 'orders') {
+        <div class="tab-pane">
+          <h4 class="timeline-section-title">📦 Order Lending & Return History</h4>
+          @if (memberHistory().length === 0) {
+          <p class="empty-text">No lending orders recorded for this member.</p>
+          } @else {
+          <div class="history-list">
+            @for (order of memberHistory(); track order.order_id) {
+            <div class="history-card">
+              <div class="history-card-header">
+                <strong>Order {{ order.order_id }}</strong>
+                <span class="badge" [ngClass]="order.status === 'active' ? 'badge--available' : 'badge--unavailable'">
+                  {{ order.status | uppercase }}
+                </span>
+              </div>
+              <div class="history-details">
+                <span><strong>Borrowed Date:</strong> {{ order.borrowed_date }}</span>
+                <span><strong>Due Date:</strong> {{ order.due_date }}</span>
+                <span><strong>Rental Paid:</strong> ₹{{ order.amount_paid }}</span>
+              </div>
+              <div class="history-items">
+                <span>Borrowed Books Timeline:</span>
+                <ul>
+                  @for (item of order.items; track item.book_id) {
+                  <li>
+                    <span class="font-semibold">{{ item.title }}</span> ({{ item.book_id }}) — ₹{{ item.price }} MRP
+                    <div class="date-tag-row">
+                      <span class="borrow-date-tag">📥 Borrowed: {{ order.borrowed_date }}</span>
+                      @if (item.returned) {
+                      <span class="returned-tag">📤 Returned on {{ item.returned_date }}</span>
+                      } @else {
+                      <span class="borrowed-tag">⏳ Not Returned Yet</span>
+                      }
+                    </div>
+                  </li>
+                  }
+                </ul>
+              </div>
+            </div>
+            }
+          </div>
+          }
+        </div>
+        }
+        }
+      </div>
+
+      <div class="modal-footer">
+        <button (click)="closeHistoryModal()" class="btn btn--outline">Close</button>
       </div>
     </div>
+  </div>
   }
 </div>

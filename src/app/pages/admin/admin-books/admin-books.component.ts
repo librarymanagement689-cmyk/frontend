@@ -233,6 +233,32 @@ export class AdminBooksComponent implements OnInit {
   }
 
 
+  exportWord(): void {
+    this.adminBookService.exportBooksWord().subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'library_catalogue.docx';
+
+        link.click();
+
+        window.URL.revokeObjectURL(url);
+
+        this.toastService.success(
+          'Word catalogue exported successfully.'
+        );
+      },
+      error: (err) => {
+        this.toastService.error(
+          this.errorService.getErrorMessage(err)
+        );
+      }
+    });
+  }
+
+
   /* toggle tamil */
 
   onTamilKeydown(

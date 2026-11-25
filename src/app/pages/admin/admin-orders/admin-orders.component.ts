@@ -1,11 +1,13 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { transliterate } from '@piraisoodan/tanglish';
 import { AdminOrderService, ReturnBooksPayload } from '../../../services/admin-order.service';
 import { AdminMemberService } from '../../../services/admin-member.service';
 import { AdminBookService } from '../../../services/admin-book.service';
+import { AdminSubscriptionService } from '../../../services/admin-subscription.service';
 import { ErrorService } from '../../../services/error.service';
-import { Order, Member, BackendBook, OrderCreate } from '../../../models/book.model';
+import { Order, Member, BackendBook, OrderCreate, Subscription } from '../../../models/book.model';
 
 @Component({
   selector: 'app-admin-orders',
@@ -18,17 +20,18 @@ export class AdminOrdersComponent implements OnInit {
   private orderService = inject(AdminOrderService);
   private memberService = inject(AdminMemberService);
   private bookService = inject(AdminBookService);
+  private subscriptionService = inject(AdminSubscriptionService);
   private errorService = inject(ErrorService);
 
   orders = signal<Order[]>([]);
   members = signal<Member[]>([]);
+  subscriptions = signal<Subscription[]>([]);
   availableBooks = signal<BackendBook[]>([]);
   bookSearchQuery = '';
   totalCount = signal(0);
   totalPages = signal(1);
   currentPage = 1;
   pageSize = 15;
-  lendingAmounts: Record<string, number | null> = {};
   searchQuery = '';
   selectedStatus = '';
 
@@ -44,6 +47,9 @@ export class AdminOrdersComponent implements OnInit {
   borrowedDate = new Date().toISOString().split('T')[0];
   dueDate = new Date(Date.now() + 14 * 86400000).toISOString().split('T')[0];
   amountPaid = 0;
+  memberPastBookIds = signal<Set<string>>(new Set());
+  memberPastBooksCount = signal(0);
+  isLoadingPastBooks = signal(false);
 
   // --- Return Modal State ---
   isReturnModalOpen = signal(false);
@@ -53,6 +59,29 @@ export class AdminOrdersComponent implements OnInit {
   ngOnInit(): void {
     this.loadOrders();
     this.loadMembersAndBooks();
+    this.loadSubscriptions();
+  }
+
+  loadSubscriptions(): void {
+    this.subscriptionService.getSubscriptions().subscribe({
+      next: (subs) => this.subscriptions.set(subs)
+    });
+  }
+
+  getMemberName(order: Order): string {
+    if (order.member_name) return order.member_name;
+    const found = this.members().find(m => m.member_id === order.member_id);
+    return found ? found.name : 'Unknown Member';
+  }
+
+  getSubscriptionName(order: Order): string {
+    if (order.subscription_name) return order.subscription_name;
+    const foundMember = this.members().find(m => m.member_id === order.member_id);
+    if (foundMember && foundMember.subscription_type_id) {
+      const foundSub = this.subscriptions().find(s => s.subscription_id === foundMember.subscription_type_id);
+      if (foundSub) return foundSub.name;
+    }
+    return 'Standard Plan';
   }
 
   loadOrders(page = 1): void {
@@ -80,18 +109,35 @@ export class AdminOrdersComponent implements OnInit {
     });
   }
 
+  authorsList = signal<string[]>([]);
+  selectedAuthorFilter = '';
+
   get filteredAvailableBooks(): BackendBook[] {
     const query = this.bookSearchQuery.trim().toLowerCase();
+    const authorFilter = this.selectedAuthorFilter.trim().toLowerCase();
 
-    if (!query) {
-      return this.availableBooks();
+    let tamilQ = '';
+    if (query && /[a-zA-Z]/.test(query)) {
+      try {
+        tamilQ = transliterate(query).toLowerCase();
+      } catch {}
     }
 
-    return this.availableBooks().filter(book =>
-      book.title?.toLowerCase().includes(query) ||
-      book.author?.toLowerCase().includes(query) ||
-      book.book_id?.toLowerCase().includes(query)
-    );
+    return this.availableBooks().filter(book => {
+      const title = (book.title || '').toLowerCase();
+      const author = (book.author || '').toLowerCase();
+      const id = (book.book_id || '').toLowerCase();
+
+      const matchesQuery = !query ||
+        title.includes(query) ||
+        author.includes(query) ||
+        id.includes(query) ||
+        (tamilQ && (title.includes(tamilQ) || author.includes(tamilQ)));
+
+      const matchesAuthor = !authorFilter || author.includes(authorFilter);
+
+      return matchesQuery && matchesAuthor;
+    });
   }
 
   loadMembersAndBooks(): void {
@@ -99,13 +145,37 @@ export class AdminOrdersComponent implements OnInit {
       next: (res) => this.members.set(res.items)
     });
 
-    this.bookService.getBooks(undefined, undefined, undefined, 'available', undefined, 1, 100).subscribe({
+    this.bookService.getBooks(undefined, undefined, undefined, 'available', undefined, 1, 300).subscribe({
       next: (res) => this.availableBooks.set(res.items)
+    });
+
+    this.bookService.getAuthors().subscribe({
+      next: (authors) => this.authorsList.set(authors || [])
     });
   }
 
   onSearch(): void {
     this.loadOrders(1);
+  }
+
+  // --- Calculations for 12% Rental Fee ---
+  get combinedMRP(): number {
+    return this.selectedBooks.reduce(
+      (sum, b) => sum + (Number(b.price) || 0),
+      0
+    );
+  }
+
+  getItemRentalCharge(book: BackendBook): number {
+    return Math.round((Number(book.price) || 0) * 0.12 * 100) / 100;
+  }
+
+  get rentalCharge(): number {
+    return Math.round(this.combinedMRP * 0.12 * 100) / 100;
+  }
+
+  get finalAmountPayable(): number {
+    return Math.round(this.rentalCharge);
   }
 
   // --- Order Creation Handlers ---
@@ -114,12 +184,41 @@ export class AdminOrdersComponent implements OnInit {
     this.selectedMemberId = this.members()[0]?.member_id || '';
     this.selectedBookIdToAdd = '';
     this.selectedBooks = [];
-    this.lendingAmounts = {};
     this.borrowedDate = new Date().toISOString().split('T')[0];
     this.dueDate = new Date(Date.now() + 14 * 86400000).toISOString().split('T')[0];
     this.amountPaid = 0;
     this.bookSearchQuery = '';
     this.isCreateModalOpen.set(true);
+    this.loadMemberPastBooks();
+  }
+
+  onMemberSelectChange(): void {
+    this.loadMemberPastBooks();
+  }
+
+  loadMemberPastBooks(): void {
+    if (!this.selectedMemberId) {
+      this.memberPastBookIds.set(new Set());
+      this.memberPastBooksCount.set(0);
+      return;
+    }
+    this.isLoadingPastBooks.set(true);
+    this.memberService.getMemberPreviouslyBorrowedBooks(this.selectedMemberId).subscribe({
+      next: (res) => {
+        this.memberPastBookIds.set(new Set(res.book_ids || []));
+        this.memberPastBooksCount.set(res.total_borrowed_unique_books || 0);
+        this.isLoadingPastBooks.set(false);
+      },
+      error: () => {
+        this.memberPastBookIds.set(new Set());
+        this.memberPastBooksCount.set(0);
+        this.isLoadingPastBooks.set(false);
+      }
+    });
+  }
+
+  isBookPreviouslyBorrowed(bookId: string): boolean {
+    return this.memberPastBookIds().has(bookId);
   }
 
   closeCreateModal(): void {
@@ -129,7 +228,13 @@ export class AdminOrdersComponent implements OnInit {
   addBookToOrder(): void {
     if (!this.selectedBookIdToAdd) return;
 
-    // Check if already added
+    // Check if member already borrowed this book previously
+    if (this.isBookPreviouslyBorrowed(this.selectedBookIdToAdd)) {
+      this.errorMessage.set('Cannot add book: This member has already borrowed this book previously and cannot take the same book again.');
+      return;
+    }
+
+    // Check if already added to current order
     if (this.selectedBooks.some(b => b.book_id === this.selectedBookIdToAdd)) {
       this.errorMessage.set('Book already added to order.');
       return;
@@ -139,7 +244,7 @@ export class AdminOrdersComponent implements OnInit {
     const foundBook = this.availableBooks().find(b => b.book_id === this.selectedBookIdToAdd);
     if (foundBook) {
       this.selectedBooks.push(foundBook);
-      this.lendingAmounts[foundBook.book_id] = null;
+      this.amountPaid = this.finalAmountPayable;
       this.selectedBookIdToAdd = '';
       this.errorMessage.set(null);
     } else {
@@ -147,8 +252,7 @@ export class AdminOrdersComponent implements OnInit {
       this.bookService.getBookById(this.selectedBookIdToAdd).subscribe({
         next: (b) => {
           this.selectedBooks.push(b);
-          this.lendingAmounts[b.book_id] = null;
-
+          this.amountPaid = this.finalAmountPayable;
           this.selectedBookIdToAdd = '';
           this.errorMessage.set(null);
         },
@@ -161,21 +265,8 @@ export class AdminOrdersComponent implements OnInit {
     this.selectedBooks = this.selectedBooks.filter(
       b => b.book_id !== bookId
     );
-
-    delete this.lendingAmounts[bookId];
+    this.amountPaid = this.finalAmountPayable;
   }
-
-  /**
-   * Authoritative price subtotal calculation based exclusively on backend prices.
-   */
-  get calculatedSubtotal(): number {
-    return this.selectedBooks.reduce(
-      (sum, b) => sum + (Number(this.lendingAmounts[b.book_id]) || 0),
-      0
-    );
-  }
-
-
 
   submitCreateOrder(): void {
     if (!this.selectedMemberId) {
@@ -188,25 +279,11 @@ export class AdminOrdersComponent implements OnInit {
       return;
     }
 
-    const missingLendingAmount = this.selectedBooks.some(
-      b =>
-        this.lendingAmounts[b.book_id] === null ||
-        this.lendingAmounts[b.book_id] === undefined ||
-        Number(this.lendingAmounts[b.book_id]) < 0
-    );
-
-    if (missingLendingAmount) {
-      this.errorMessage.set(
-        'Please enter the lending amount for every selected book.'
-      );
-      return;
-    }
-
     const payload: OrderCreate = {
       member_id: this.selectedMemberId,
       items: this.selectedBooks.map(b => ({
         book_id: b.book_id,
-        lending_amount: Number(this.lendingAmounts[b.book_id] || 0)
+        lending_amount: this.getItemRentalCharge(b)
       })),
       borrowed_date: this.borrowedDate,
       due_date: this.dueDate,
@@ -218,7 +295,7 @@ export class AdminOrdersComponent implements OnInit {
 
     this.orderService.createOrder(payload).subscribe({
       next: (created) => {
-        this.showSuccess(`Lending Order ${created.order_id} created successfully! Subtotal: ₹${created.subtotal}`);
+        this.showSuccess(`Lending Order ${created.order_id} created successfully! Subtotal Rental Charge: ₹${created.subtotal}`);
         this.closeCreateModal();
         this.loadOrders(1);
       },

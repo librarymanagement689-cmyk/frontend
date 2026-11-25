@@ -62,9 +62,11 @@
         <tr>
           <th>Order ID</th>
           <th>Member ID</th>
-          <th>Borrowed Books & Master Prices</th>
+          <th>Borrower Name</th>
+          <th>Subscription Plan</th>
+          <th>Borrowed Books (MRP & 12% Rental)</th>
           <th>Dates (Borrowed / Due)</th>
-          <th>Subtotal</th>
+          <th>Subtotal (Rental)</th>
           <th>Amount Paid</th>
           <th>Status</th>
           <th>Actions</th>
@@ -76,13 +78,21 @@
           <td><span class="id-badge">{{ order.order_id }}</span></td>
           <td><span class="member-badge">{{ order.member_id }}</span></td>
           <td>
+            <div class="borrower-name">
+              <strong>{{ getMemberName(order) }}</strong>
+            </div>
+          </td>
+          <td>
+            <span class="plan-badge">{{ getSubscriptionName(order) }}</span>
+          </td>
+          <td>
             <ul class="order-items-list">
               @for (item of order.items; track item.book_id) {
               <li>
                 <strong>{{ item.title }}</strong>
                 ({{ item.book_id }})
-                — Actual: ₹{{ item.price | number:'1.2-2' }}
-                — Lending: ₹{{ item.lending_amount | number:'1.2-2' }}
+                — MRP: ₹{{ item.price | number:'1.2-2' }}
+                — 12% Rental: ₹{{ item.lending_amount | number:'1.2-2' }}
                 @if (item.returned) {
                 <span class="status-pill returned">Returned ({{ item.returned_date }})</span>
                 } @else {
@@ -148,173 +158,178 @@
         <button (click)="closeCreateModal()" class="close-btn">&times;</button>
       </div>
 
-      <form (ngSubmit)="submitCreateOrder()" class="modal-body">
-        <!-- Member Selection -->
-        <div class="form-group">
-          <label>Select Active Member *</label>
-          <select [(ngModel)]="selectedMemberId" name="selectedMemberId" required class="form-control">
-            <option value="">-- Choose Member --</option>
-            @for (m of members(); track m.member_id) {
-            <option [value]="m.member_id">
-              {{ m.name }} ({{ m.member_id }}) — Phone: {{ m.phone }}
-            </option>
+      <form (ngSubmit)="submitCreateOrder()" class="modal-form">
+        <div class="modal-body">
+          <!-- Member Selection -->
+          <div class="form-group">
+            <label>Select Active Member *</label>
+            <select [(ngModel)]="selectedMemberId" (ngModelChange)="onMemberSelectChange()" name="selectedMemberId" required class="form-control">
+              <option value="">-- Choose Member --</option>
+              @for (m of members(); track m.member_id) {
+              <option [value]="m.member_id">
+                {{ m.name }} ({{ m.member_id }}) — Phone: {{ m.phone }}
+              </option>
+              }
+            </select>
+            @if (selectedMemberId) {
+              <div class="member-history-pill">
+                @if (isLoadingPastBooks()) {
+                  <span>⏳ Checking borrowing history...</span>
+                } @else {
+                  <span>📚 Member has previously borrowed <strong>{{ memberPastBooksCount() }}</strong> unique book(s).</span>
+                  <span class="pill-hint">Previously taken books are blocked from repeat borrowing.</span>
+                }
+              </div>
             }
-          </select>
-        </div>
-
-        <!-- Book Selection & Authoritative Price Snapshot -->
-        <!-- Book Selection -->
-        <div class="form-group">
-          <label>Select Available Book to Add *</label>
-
-          <!-- Book Search -->
-          <div class="book-search-row">
-            <input type="text" [(ngModel)]="bookSearchQuery" name="bookSearchQuery"
-              placeholder="🔍 Search by title, author or Book ID..." class="form-control" />
           </div>
 
-          <!-- Search Results -->
-          @if (bookSearchQuery.trim()) {
-          <div class="book-search-results">
+          <!-- Book Selection -->
+          <div class="form-group">
+            <label>Select Available Book to Add *</label>
 
-            @if (filteredAvailableBooks.length === 0) {
-            <div class="book-search-empty">
-              No available books found.
-            </div>
-            } @else {
-
-            @for (b of filteredAvailableBooks; track b.book_id) {
-            <div class="book-search-result">
-
-              <div class="book-search-info">
-                <strong>{{ b.title }}</strong>
-
-                <span>
-                  {{ b.author || 'Unknown Author' }}
-                  · {{ b.book_id }}
-                </span>
-
-                <small>
-                  Actual Price:
-                  <strong>₹{{ b.price | number:'1.2-2' }}</strong>
-                </small>
+            <!-- Book Search & Author Filter -->
+            <div class="book-search-controls">
+              <div class="book-search-row">
+                <input type="text" [(ngModel)]="bookSearchQuery" name="bookSearchQuery"
+                  placeholder="🔍 Search in English or Tamil (e.g., ponniyin, kalki, velpari) or ID..." class="form-control" />
               </div>
+              <div class="book-author-filter-row mt-2">
+                <select [(ngModel)]="selectedAuthorFilter" name="selectedAuthorFilter" class="form-control">
+                  <option value="">-- All Authors (Filter by Author) --</option>
+                  @for (a of authorsList(); track a) {
+                    <option [value]="a">{{ a }}</option>
+                  }
+                </select>
+              </div>
+            </div>
 
-              <button type="button" (click)="selectedBookIdToAdd = b.book_id; addBookToOrder()"
-                class="btn btn--outline-gold btn--sm">
-                + Add
-              </button>
+            <!-- Search Results -->
+            @if (bookSearchQuery.trim() || selectedAuthorFilter) {
+            <div class="book-search-results">
+
+              @if (filteredAvailableBooks.length === 0) {
+              <div class="book-search-empty">
+                No available books found.
+              </div>
+              } @else {
+
+              @for (b of filteredAvailableBooks; track b.book_id) {
+              <div class="book-search-result" [class.book-search-result--blocked]="isBookPreviouslyBorrowed(b.book_id)">
+
+                <div class="book-search-info">
+                  <div class="book-title-row">
+                    <strong>{{ b.title }}</strong>
+                    @if (isBookPreviouslyBorrowed(b.book_id)) {
+                      <span class="badge-duplicate">🚫 Previously Taken (Blocked)</span>
+                    }
+                  </div>
+
+                  <span>
+                    {{ b.author || 'Unknown Author' }}
+                    · {{ b.book_id }}
+                  </span>
+
+                  <small>
+                    Actual Price:
+                    <strong>₹{{ b.price | number:'1.2-2' }}</strong>
+                  </small>
+                </div>
+
+                @if (isBookPreviouslyBorrowed(b.book_id)) {
+                  <button type="button" disabled class="btn btn--disabled btn--sm" title="Member already took this book previously">
+                    Blocked
+                  </button>
+                } @else {
+                  <button type="button" (click)="selectedBookIdToAdd = b.book_id; addBookToOrder()"
+                    class="btn btn--outline-gold btn--sm">
+                    + Add
+                  </button>
+                }
+
+              </div>
+              }
+
+              }
 
             </div>
             }
+          </div>
 
-            }
+          <!-- Selected Books List & Automatic 12% Rental Calculation -->
+          @if (selectedBooks.length > 0) {
+          <div class="selected-books-box">
+            <label>Selected Books & Rental Breakdown:</label>
+            <div class="table-responsive">
+              <table class="selected-books-table">
+                <thead>
+                  <tr>
+                    <th>Book Details</th>
+                    <th>MRP (Price)</th>
+                    <th>Rental Charge (12%)</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (b of selectedBooks; track b.book_id) {
+                  <tr>
+                    <td>
+                      <div class="selected-book-info">
+                        <strong>{{ b.title }}</strong>
+                        <small>{{ b.author || 'Unknown Author' }} · {{ b.book_id }}</small>
+                      </div>
+                    </td>
+                    <td>
+                      <strong>₹{{ b.price | number:'1.2-2' }}</strong>
+                    </td>
+                    <td>
+                      <span class="rental-badge">₹{{ getItemRentalCharge(b) | number:'1.2-2' }}</span>
+                    </td>
+                    <td>
+                      <button type="button" (click)="removeBookFromOrder(b.book_id)" class="remove-btn">
+                        ✕ Remove
+                      </button>
+                    </td>
+                  </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
 
+            <div class="billing-breakdown-card">
+              <div class="breakdown-row">
+                <span>Combined MRP (Selected Books):</span>
+                <span class="mrp-amount">₹{{ combinedMRP | number:'1.2-2' }}</span>
+              </div>
+              <div class="breakdown-row">
+                <span>Rental Charge (12% of Combined MRP):</span>
+                <span class="rental-amount">₹{{ rentalCharge | number:'1.2-2' }}</span>
+              </div>
+              <div class="breakdown-row total-row">
+                <span>Final Amount Payable (Rounded to nearest ₹):</span>
+                <span class="final-amount">₹{{ finalAmountPayable | number:'1.0-0' }}</span>
+              </div>
+            </div>
           </div>
           }
-        </div>
 
-        <!-- Selected Books List & Backend Prices -->
-        @if (selectedBooks.length > 0) {
-        <div class="selected-books-box">
-          <label>Selected Books & Lending Amounts:</label>
-          <table class="selected-books-table">
-            <thead>
-              <tr>
-                <table class="selected-books-table">
-                  <thead>
-                    <tr>
-                      <th>Book</th>
-                      <th>Actual Price</th>
-                      <th>Lending Amount</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
+          <!-- Dates & Payment -->
+          <div class="form-row">
+            <div class="form-group">
+              <label>Borrowed Date *</label>
+              <input type="date" [(ngModel)]="borrowedDate" name="borrowedDate" required class="form-control" />
+            </div>
 
-                  <tbody>
-                    @for (b of selectedBooks; track b.book_id) {
-                    <tr>
-
-                      <td>
-                        <div class="selected-book-info">
-                          <strong>{{ b.title }}</strong>
-                          <small>
-                            {{ b.author || 'Unknown Author' }}
-                            · {{ b.book_id }}
-                          </small>
-                        </div>
-                      </td>
-
-                      <!-- Actual database/master price -->
-                      <td>
-                        <strong>
-                          ₹{{ b.price | number:'1.2-2' }}
-                        </strong>
-                      </td>
-
-                      <!-- Admin manually enters lending amount -->
-                      <td>
-                        <div class="lending-amount-field">
-                          <span>₹</span>
-
-                          <input type="number" [(ngModel)]="lendingAmounts[b.book_id]"
-                            [name]="'lendingAmount_' + b.book_id" min="0" step="0.01" placeholder="Enter amount"
-                            class="form-control" />
-                        </div>
-                      </td>
-
-                      <td>
-                        <button type="button" (click)="removeBookFromOrder(b.book_id)" class="remove-btn">
-                          ✕ Remove
-                        </button>
-                      </td>
-
-                    </tr>
-                    }
-                  </tbody>
-                </table>
-              </tr>
-            </thead>
-            <tbody>
-              @for (b of selectedBooks; track b.book_id) {
-              <tr>
-                <td><span class="id-badge">{{ b.book_id }}</span></td>
-                <td>{{ b.title }} <small>by {{ b.author }}</small></td>
-                <td><strong>₹{{ b.price | number:'1.2-2' }}</strong></td>
-                <td>
-                  <button type="button" (click)="removeBookFromOrder(b.book_id)" class="remove-btn">
-                    ✕ Remove
-                  </button>
-                </td>
-              </tr>
-              }
-            </tbody>
-          </table>
-
-          <div class="subtotal-display">
-            <span>Calculated Subtotal:</span>
-            <span class="subtotal-amount">₹{{ calculatedSubtotal | number:'1.2-2' }}</span>
-          </div>
-        </div>
-        }
-
-        <!-- Dates & Payment -->
-        <div class="form-row">
-          <div class="form-group">
-            <label>Borrowed Date *</label>
-            <input type="date" [(ngModel)]="borrowedDate" name="borrowedDate" required class="form-control" />
+            <div class="form-group">
+              <label>Due Date *</label>
+              <input type="date" [(ngModel)]="dueDate" name="dueDate" required class="form-control" />
+            </div>
           </div>
 
           <div class="form-group">
-            <label>Due Date *</label>
-            <input type="date" [(ngModel)]="dueDate" name="dueDate" required class="form-control" />
+            <label>Amount Paid (₹) *</label>
+            <input type="number" [(ngModel)]="amountPaid" name="amountPaid" required min="0" step="1"
+              class="form-control" />
           </div>
-        </div>
-
-        <div class="form-group">
-          <label>Amount Paid (₹) *</label>
-          <input type="number" [(ngModel)]="amountPaid" name="amountPaid" required min="0" step="0.01"
-            class="form-control" />
         </div>
 
         <div class="modal-footer">
